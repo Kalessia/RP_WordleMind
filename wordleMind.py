@@ -12,6 +12,6 @@ motPropose = "tarte"
 cptCorrectsBienPlaces, cptCorrectsMalPlaces = tools.cptCaracteresCorrects(motSecret, motPropose)
 print(cptCorrectsBienPlaces, cptCorrectsMalPlaces)
 
-a = algorithmeGenetique()
+#a = algorithmeGenetique()
 #prochainMot = a.
 

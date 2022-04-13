@@ -1,4 +1,7 @@
 
+from inspect import modulesbyfile
+
+
 def acquisirVocabDepuisFichier(nomFichier):
     """Retourne un dictionnaire ayant comme clés les différents longueurs des mots 
     et comme valeurs un tableau contenant les mots de telle longueur, crée à partir d'un fichier texte contenant des mots
@@ -32,16 +35,24 @@ def cptCaracteresCorrects(motPropose, motSecret):
     cptCorrectsBienPlaces = 0
     cptCorrectsMalPlaces = 0
 
-    motSecret = motSecret.lower()
-    motPropose = motPropose.lower()
+    motSecret = list(motSecret.lower())
+    motPropose = list(motPropose.lower())
 
+    tmp = []
     for i in range(len(motPropose)):
         if motPropose[i] == motSecret[i]:
             cptCorrectsBienPlaces += 1
-        else:
-            if motPropose[i] in motSecret:
-                cptCorrectsMalPlaces += 1
-            
+            tmp.append(motPropose[i])
+    
+    for lettre in tmp:
+        motPropose.remove(lettre)
+        motSecret.remove(lettre)
+
+    for lettre in motPropose:
+        if lettre in motSecret:
+            cptCorrectsMalPlaces += 1
+            motSecret.remove(lettre)
+
     return cptCorrectsBienPlaces, cptCorrectsMalPlaces
 
 
