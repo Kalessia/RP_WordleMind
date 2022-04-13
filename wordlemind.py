@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import random
 
 # Return an list of string from the dico with length of the word = wordSize
@@ -54,6 +52,10 @@ dico = []
 rounds = 0
 secret = ""
 globalIndexes = []
+currentIndexes = []
+
+
+debug = False
 
 
 
@@ -82,7 +84,7 @@ def initIndexes(x, y):
     indexes = [list(i) for i in list(combinations(arr, x))]
 
     globalIndexes = indexes
-    print(globalIndexes) ###
+    if (debug): print(globalIndexes) ###
 
 
 # Find the next word to guess with the freeze indexes (ex: JACK with [0,1] can be JARE)
@@ -90,11 +92,13 @@ def initIndexes(x, y):
 def findNextWord(guess):
     global globalIndexes
     global dico
+    global currentIndexes
 
     # For each indexes group, try to find a word, otherwise go to the next indexes group
     for indexes in globalIndexes:
         word = findWordWithIndex(indexes, guess)
         if word != False:
+            currentIndexes = indexes
             return word
 
     # Cannot find the word...
@@ -130,12 +134,34 @@ def findWordWithIndex(indexes, guess):
                 lettersCorrect += 1
             if lettersCorrect == len(indexes):
                 dico.pop(i)
-                print('Freeze:', freezeString) ###
+                if (debug): print('Freeze:', freezeString) ###
                 return word
     
     # This case should not be possible
     # print('No word found for those indexes: ', indexes, 'Change index...')
     return False
+
+
+# Clean dico
+# 
+def cleanDico(guess, indexes):
+    global dico
+
+    wordIndexList = []
+
+    for i in range(len(dico)):
+        word = dico[i]
+        lettersCorrect = 0
+        for j in indexes:
+            if word[j] != guess[j]:
+                break
+            else:
+                lettersCorrect += 1
+            if lettersCorrect == len(indexes):
+                wordIndexList.append(i)
+    
+    for i in sorted(wordIndexList, reverse=True):
+        del dico[i]
 
 
 # Return the score of the word regarding x and y
@@ -150,10 +176,11 @@ def playRound(guess, results):
     global secret
     global dico
     global rounds
+    global currentIndexes
 
     x,y = wordlemind(guess, secret)
     newScore = getScore(x, y)
-    print('Guess: ', guess, '(', x, ',', y, ') ==> ', newScore) ###
+    if (debug): print('Guess: ', guess, '(', x, ',', y, ') ==> ', newScore) ###
 
     rounds += 1
 
@@ -163,14 +190,19 @@ def playRound(guess, results):
 
     # Rerun with a random word. We prevent strating the main algo with x === 0
     if not bool(results) and x == 0:
-        print('Restart') ###
+        if (debug): print('Restart') ###
         return playRound(getRandomWord(True), {})
+
+    # Add contraint (Forward checking)
+    if bool(results) and newScore < results["score"]:
+        cleanDico(guess, currentIndexes)
 
     # If a new guessed word have a better score, then we continue the algo with this new word and results (x, y and score)
     if not bool(results) or (newScore > results["score"]):
-        print('################################') ###
-        print('### Best word: ', guess, ' ==> ', newScore, '###') ###
-        print('################################') ###
+        if (debug):
+            print('################################') ###
+            print('### Best word: ', guess, ' ==> ', newScore, '###') ###
+            print('################################') ###
         
         # Update results param with the new values
         results["word"] = guess
@@ -199,7 +231,7 @@ def startGame(n):
     global secret
     global globalIndexes
 
-    print('Start new game') ###
+    if (debug): print('Start new game') ###
 
     # Define global variables
     dico = getDico("dico.txt", n)
@@ -207,7 +239,7 @@ def startGame(n):
     secret = getRandomWord(False)
     globalIndexes = []
 
-    print('Secret to find: ', secret) ###
+    if (debug): print('Secret to find: ', secret) ###
 
     return playRound(getRandomWord(True), {})
 
@@ -216,7 +248,7 @@ def startGame(n):
 
 def statistics():
     roundsArray = []
-    for n in range(4,8):
+    for n in range(4,9):
         for i in range(20):
             result = startGame(n)
             # print(result)
@@ -224,7 +256,7 @@ def statistics():
                 roundsArray.append(result[1])
 
         average = sum(roundsArray) / len(roundsArray)
-        print('Average n=', n, ":", average)
+        print('Average n=', n, ":", average, '20 iter')
 
 
 
@@ -232,9 +264,11 @@ def statistics():
 t1_start = process_time()
 
 
+# For single game, set debug = True for enable logs
+print(startGame(4))
 
-print(startGame(5)) # n lettres à modifier par l'utilisateur 
-# statistics
+# For statistics, set debug = False for disabling logs
+# statistics()
 
 
 t1_stop = process_time()
