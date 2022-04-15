@@ -73,3 +73,8 @@ def estCompatibile(motPropose, motSecret, listeLettresInterdites):
             return False
     
     return True
+
+    #---------------------------------------------------------------------------------------------------------------
+    # tools for part1
+
+    
