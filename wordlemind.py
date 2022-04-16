@@ -99,18 +99,19 @@ def playEvolutionnary():
             print(f"\nAttempt n.{nbAttempt} : played word is {nextTry}")
 
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
-
-
+        if nextTry == None:
+            break
+    
     if plot:
         analysis.plotResults()
-
+    
     return getOutcome("part2_ea", nextTry, nbAttempt)
 
 
 #------------------------------------------------------------------------------------------------------
 
 def getOutcome(algo, finalPlayedWord, nbAttempt):
-
+    
     if algo == "part2_ea":
         print(f"\nPlay Evolutionnary algorithm mode                                                                             \
             \n\tpopSize : {popSize}, \n\tmaxGen : {maxGen}, \n\tcrossOp : {crossOp}, \n\tmutationOp : {mutationOp},             \
@@ -124,7 +125,7 @@ def getOutcome(algo, finalPlayedWord, nbAttempt):
     else:
         cptRightPos, cptBadPos = tools.cptCorrectsChars(finalPlayedWord, secretWord)
         print(f"Oooooops... The last played word has {cptRightPos} letters at the correct position and {cptBadPos} letters at a wrong position.")
-        print(f"Next time will be a good one !")
+        print("Next time will be a good one !")
 
 
 

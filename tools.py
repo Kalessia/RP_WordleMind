@@ -79,23 +79,13 @@ def cptCorrectsChars(word, secretWord):
 
 #---------------------------------------------------------------------------------------------------------------
 
-# def estCompatibile(word, secretWord, listelettersInterdites):
-#     """Retourne un booléan :
-#         - true, si le word est compatible avec les informations obtenues avec les essais précedents
-#         - false, sinon.
+def isWordConsistent(word):
+    return True
     
-#     :param word : word proposée par le joueur
-#     :param secretWord : word à déviner
-#     :param listelettersInterdites : liste de letters qui ne doivent pas apparaitre dans word, car éliminées lors des essais précédents
-#     """
 
-#     for c in word:
-#         if c in listelettersInterdites:
-#             return False
-    
-#     return True
+#---------------------------------------------------------------------------------------------------------------
 
-# def isWordValid(word):
-
-#     if word in 
-#     return True
+def isWordValid(word):
+    if word in vocabulary and isWordConsistent(word):
+        return True
+    return False

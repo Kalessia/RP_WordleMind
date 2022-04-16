@@ -97,13 +97,13 @@ class evolutionnaryAlgorithm():
         popFitnesses = self.computeFitness(pop)
         eSet = []
 
-        if self.verbose :
+        if  self.verbose:
             print("\nFirst Generation Population :", pop)
             print("First Generation Fitnesses :", popFitnesses)
 
         nbGen = 0
         timeout = False
-        while len(eSet) <= maxSizeESet or timeout:
+        while len(eSet) <= maxSizeESet and timeout:
             oldPop = pop
 
             if self.verbose:
@@ -127,20 +127,20 @@ class evolutionnaryAlgorithm():
 
             if timeout == False and nbGen == self.maxGen and len(eSet) == 0:
                 if self.verbose : 
-                    print("Timer started")
+                    print("Extra time timer started")
                 timeout = True
                 tStart = time.time()
 
-            if len(eSet) > 0:
-                timeout = False
 
-            
             if timeout == True:
-                t = time.time() - tStart 
-                if t >= self.maxTimeout:
-                    if self.verbose : 
-                        print("Timer finished. Procedure failed.")
-                    return "" # fail
+                if len(eSet) > 0:
+                    timeout = False
+                else:
+                    t = time.time() - tStart 
+                    if t >= self.maxTimeout:
+                        if self.verbose : 
+                            print("Extra time allowed to find a solution finished. Procedure failed.")
+                        return None # fail
             
 
         nextTry = random.choice(eSet)
@@ -153,7 +153,7 @@ class evolutionnaryAlgorithm():
         fitnesses = []
 
         for p in population:
-            nombreIncompatibilites = fitnesses.append(14)
+            fitnesses.append(14)
         return fitnesses
 
 
