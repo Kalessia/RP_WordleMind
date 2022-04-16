@@ -1,75 +1,101 @@
+#######################################################################################################
+#   Sorbonne université Master ANDROIDE 2021 - 2022
+#   Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle Mind 
+# 
+#                                           WORDLE MIND game
+#
+#                                 Alessia LOI 3971668, Antoine THOMAS
+#
+#######################################################################################################
 
-from inspect import modulesbyfile
 
 
-def acquisirVocabDepuisFichier(nomFichier):
-    """Retourne un dictionnaire ayant comme clés les différents longueurs des mots 
-    et comme valeurs un tableau contenant les mots de telle longueur, crée à partir d'un fichier texte contenant des mots
+#------------------------------------------------------------------------------------------------------
+#   Imports
+#------------------------------------------------------------------------------------------------------
 
-    :param nomFichier : fichier texte contenant les mots du vocabulaire
-    """
+import random
 
-    listeMots = []
-    vocabulaire = {}
-    with open(nomFichier, "r") as f:
-        listeMots = f.read().split("\n")
 
-    for mot in listeMots :
-        n = len(mot)
-        if n in list(vocabulaire.keys()):
-            vocabulaire[n].append(mot)
-        else:
-            vocabulaire[n] = [mot]
+#------------------------------------------------------------------------------------------------------
+#   Parameters
+#------------------------------------------------------------------------------------------------------
+
+vocabulary = None
+
+
+
+#------------------------------------------------------------------------------------------------------
+#   Tools
+#------------------------------------------------------------------------------------------------------
+
+def getVocabFromFile(filename, wordSize):
+    wordsList = []
+    vocabulary_tmp = []
+    with open(filename, "r") as f:
+        wordsList = f.read().split("\n")
+
+    for word in wordsList :
+        if len(word) == wordSize:
+            vocabulary_tmp.append(word)
     
-    return vocabulaire
+    global vocabulary
+    vocabulary = vocabulary_tmp
 
 
 #---------------------------------------------------------------------------------------------------------------
 
-def cptCaracteresCorrects(motPropose, motSecret):
-    """Retorune le nombre de caracteres corrects bien placés et le nombre de caractères corrects mal placés
+def getWord():
+    return random.choice(vocabulary)
 
-    :param motPropose : mot proposée par le joueur
-    :param motSecret : mot à déviner
-    """
-    cptCorrectsBienPlaces = 0
-    cptCorrectsMalPlaces = 0
 
-    motSecret = list(motSecret.lower())
-    motPropose = list(motPropose.lower())
+#---------------------------------------------------------------------------------------------------------------
+
+def cptCorrectsChars(word, secretWord):
+
+    cptRightPos = 0
+    cptBadPos = 0
+
+    secretWord = list(secretWord)
+    word = list(word)
 
     tmp = []
-    for i in range(len(motPropose)):
-        if motPropose[i] == motSecret[i]:
-            cptCorrectsBienPlaces += 1
-            tmp.append(motPropose[i])
+    for i in range(len(word)):
+        if word[i] == secretWord[i]:
+            cptRightPos += 1
+            tmp.append(word[i])
     
-    for lettre in tmp:
-        motPropose.remove(lettre)
-        motSecret.remove(lettre)
+    for letter in tmp:
+        word.remove(letter)
+        secretWord.remove(letter)
 
-    for lettre in motPropose:
-        if lettre in motSecret:
-            cptCorrectsMalPlaces += 1
-            motSecret.remove(lettre)
+    for letter in word:
+        if letter in secretWord:
+            cptBadPos += 1
+            secretWord.remove(letter)
 
-    return cptCorrectsBienPlaces, cptCorrectsMalPlaces
+    return cptRightPos, cptBadPos
 
 
 #---------------------------------------------------------------------------------------------------------------
 
-def estCompatibile(motPropose, motSecret, listeLettresInterdites):
-    """Retourne un booléan :
-        - true, si le motPropose est compatible avec les informations obtenues avec les essais précedents
-        - false, sinon.
+# def estCompatibile(word, secretWord, listelettersInterdites):
+#     """Retourne un booléan :
+#         - true, si le word est compatible avec les informations obtenues avec les essais précedents
+#         - false, sinon.
     
-    :param motPropose : mot proposée par le joueur
-    :param motSecret : mot à déviner
-    :param listeLettresInterdites : liste de lettres qui ne doivent pas apparaitre dans motPropose, car éliminées lors des essais précédents
-    """
+#     :param word : word proposée par le joueur
+#     :param secretWord : word à déviner
+#     :param listelettersInterdites : liste de letters qui ne doivent pas apparaitre dans word, car éliminées lors des essais précédents
+#     """
 
-    for c in motPropose:
-        if c in listeLettresInterdites:
-            return False
+#     for c in word:
+#         if c in listelettersInterdites:
+#             return False
     
-    return True
+#     return True
+
+# def isWordValid(word):
+
+#     if word in 
+#     return True
