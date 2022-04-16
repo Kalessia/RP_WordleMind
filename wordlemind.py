@@ -29,20 +29,20 @@ import part2
 # general : set these variables to play with one of the proposed algorithms
 wordLength = 4
 filename = "dico.txt"
-maxNbAttempts = 5
+maxNbAttempts = 10
 verbose = True                  # set 'True' to see a trace of the algorithm            default is False
 plot = False                    # set 'True' to see a plot of the results               default is False
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
-popSize = 10                    # number of individuals in one population               default is 10
-maxGen = 1                      # number of generations to run                          default is 1
+popSize = 100                   # number of individuals in one population               default is 10
+maxGen = 0                     # number of generations to run                          default is 1
 
 crossOp = 1                     # crossover operation choice                            default is 1
                                 #       1 = OnePointCrossover
                                 #       2 = TwoPointsCrossover 
 
-mutationOp = 1                  # mutation operation choice                             default is 1
+mutationOp = 0.8                # mutation operation choice                             default is 1
                                 #       1 = 
                                 #       2 = 
 mutationRate = 1                # mutation probability, value between [0,1]             default is 0.5
@@ -55,9 +55,9 @@ indiceKTournament = 3           # number of selected best individuals in one gen
 mu = 3                          # number of selected parents in one generation          default is 3
 lambda_ = 3                     # number of generated childrens in one generation       default is 3
 
-maxTimeout = 0                  # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 1000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
 
-maxSizeESet = 14                # maximal size of valid words to collect                default is 14
+maxSizeESet = 10                 # maximal size of valid words to collect                default is 14
 
 
 
@@ -94,13 +94,17 @@ def playEvolutionnary():
     while nbAttempt < maxNbAttempts and nextTry != secretWord:
         nbAttempt += 1
 
+        cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
+        if cptRightPos == len(nextTry) or nextTry == None:
+            break
+
         if verbose :
-            print(f"\nAttempt n.{nbAttempt} : played word is {nextTry}")
+            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***")
+            print(f"Letters at the correct position : {cptRightPos}, Letters at a wrong position : {cptBadPos}.")
 
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
-        if nextTry == None:
-            break
-    
+
+
     if plot:
         analysis.plotResults()
     

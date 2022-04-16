@@ -27,7 +27,7 @@ import tools
 #   Evolutionnary algorithm
 #------------------------------------------------------------------------------------------------------
 
-random.seed(42)
+random.seed()
 
 
 class evolutionnaryAlgorithm():
@@ -43,6 +43,7 @@ class evolutionnaryAlgorithm():
         self.maxTimeout = maxTimeout    # 5 min = 300.000 ms
         self.verbose = verbose
 
+        
         if crossOp == 1:
             self.crossOp = self.onePointCrossover
         elif crossOp == 2:
@@ -62,7 +63,7 @@ class evolutionnaryAlgorithm():
 
 
         if selectionOp == 1:
-            self.selectionOp = self.kTournement
+            self.selectionOp = self.kTournament
         elif selectionOp == 2:
             self.selectionOp = self.uPlusLambdaSelection
         elif selectionOp == 3:
@@ -79,7 +80,7 @@ class evolutionnaryAlgorithm():
         """
         """
         parent = firstWord
-        offspring = []
+        offspring = [parent]
 
         while len(offspring) < taillePop:
             child = self.aleaCharMutation(parent, self.mutationRate)
@@ -95,7 +96,7 @@ class evolutionnaryAlgorithm():
     def findNextTry(self, previousWord, maxSizeESet = 14):
         
         pop = self.initPopulation(previousWord.lower(), self.popSize)
-        popFitnesses = self.computeFitness(pop)
+        popFitnesses = self.computeFitnesses(pop)
         eSet = []
 
         if  self.verbose:
@@ -106,31 +107,31 @@ class evolutionnaryAlgorithm():
         loop = True
         timeout = False
         while loop:
-            oldPop = pop
 
             if self.verbose:
                 print("\n--------------------------------------------------------------------------")
                 print("\n>>> Generation n.", nbGen, " <<<\n")
-                print("Population :", pop)
+                print("Old population :", pop)
+                print("Old fitnesses :", popFitnesses)
 
             pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_)
-            popFitnesses = self.computeFitness(pop)
+            popFitnesses = self.computeFitnesses(pop)
 
-            newESet = self.selectionESet(pop)
+            newESet = self.selectionESet(pop, popFitnesses, maxSizeESet)
             eSet = self.addESet(eSet, newESet, maxSizeESet)
             if len(eSet) >= maxSizeESet:
                 loop = False
 
             if self.verbose:
-                print("\nOld population :", oldPop)
-                print("New population :", pop)
+                print("\nNew population :", pop)
+                print("New fitnesses :", popFitnesses)
                 print("\neSet :", eSet)
 
             
             nbGen += 1
             if timeout == False and nbGen == self.maxGen and len(eSet) == 0:
                 if self.verbose :
-                    print("eSet is still empty... Extra time timer started to find a new word to play.")
+                    print("\neSet is still empty... Extra time timer started to find a new word to play.")
                 timeout = True
                 tStart = time.time()
 
@@ -141,7 +142,7 @@ class evolutionnaryAlgorithm():
                     t = time.time() - tStart 
                     if t >= self.maxTimeout:
                         if self.verbose : 
-                            print("Extra time allowed to find a solution is finished. The procedure has failed.")
+                            print("\nExtra time allowed to find a solution is finished. The procedure has failed.")
                             loop = False
             
 
@@ -154,7 +155,7 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
 
-    def computeFitness(self, population):
+    def computeFitnesses(self, population):
         fitnesses = []
 
         for p in population:
@@ -165,12 +166,14 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
 
-    def selectionESet(self, population):
+    def selectionESet(self, population, fitnesses, maxSizeESet):
         candidateWords = []
         
-        for word in population:
-            if tools.isWordValid(word):
-                candidateWords.append(word)
+        priority = np.argsort(fitnesses)[::-1][:maxSizeESet]
+        for pr in priority:
+            if fitnesses[pr] == 0:
+                break
+            candidateWords.append(population[pr])
 
         return candidateWords
         
@@ -248,7 +251,7 @@ class evolutionnaryAlgorithm():
         if random.random() <= mutationRate:
             pos = random.randint(0, len(child)-1)
             l = random.choice(alphabetDomain)
-            while child[pos] == l:
+            while child[pos] == l or tools.isForbiddenLetter(l):
                 l = random.choice(alphabetDomain)
             child[pos] = l
        
@@ -285,13 +288,14 @@ class evolutionnaryAlgorithm():
     #       - comma-sélection (u,l) : select u best parents and generate l childrens, pop = l individuals (offspring only)
     #---------------------------------------------------------------------------
 
-    def kTournement(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
+    def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
         pop = []
         offspring = []
-        priority = np.argsort(parentsFitnesses)[:k]
+        priority = np.argsort(parentsFitnesses)[::-1][:k]
         
         for pr in priority:
             pop.append(parents[pr])
+        #print("Selected parents :", pop)    ####################################################################!!!!!!!!!!!!!!!!!!!
 
         for child in range(parentsSize):
             p1 = random.choice(pop)
@@ -303,11 +307,11 @@ class evolutionnaryAlgorithm():
             child2 = self.mutationOp(child1, self.mutationRate)
             offspring.append(child2)
 
-            if self.verbose:
-                print("\nParent1 :", p1)
-                print("Parent2 :", p2)
-                print("\tCross effect :", child1)
-                print("\tMutation effect :", child2)
+            # if self.verbose:
+            #     print("\nParent1 :", p1)
+            #     print("Parent2 :", p2)
+            #     print("\tCross effect :", child1)
+            #     print("\tMutation effect :", child2)
 
         return offspring
 
@@ -316,14 +320,15 @@ class evolutionnaryAlgorithm():
 
     def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
 
-        assert (mu + lambda_) == len(parents), "Mu+Lambda must have size = population size"
+        assert (mu + lambda_) == len(parents), f"Mu+Lambda must have size = population size = {len(parents)}"
 
         pop = []
         offspring = []
-        priority = np.argsort(parentsFitnesses)[:mu]
+        priority = np.argsort(parentsFitnesses)[::-1][:mu]
         
         for pr in priority:
             pop.append(parents[pr])   # pop contains mu best elements
+        #print("Selected parents :", pop)       ####################################################################!!!!!!!!!!!!!!!!!!!
 
         for child in range(lambda_):
             p1 = random.choice(pop)
@@ -349,14 +354,15 @@ class evolutionnaryAlgorithm():
    
     def lambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
 
-        assert lambda_ == len(parents), "Lambda and population must have the same size"
+        assert lambda_ == len(parents), f"Lambda and population must have the same size = {len(parents)}"
 
         pop = []
         offspring = []
-        priority = np.argsort(parentsFitnesses)[:mu]
+        priority = np.argsort(parentsFitnesses)[::-1][:mu]
         
         for pr in priority:
-            pop.append(parents[pr])   # pop contains mu best elements
+            pop.append(parents[pr])   # pop contains the mu best parents
+        #print("Selected parents :", pop)   ####################################################################!!!!!!!!!!!!!!!!!!!
 
         for child in range(lambda_):
             p1 = random.choice(pop)

@@ -24,7 +24,8 @@ import copy
 
 vocabulary = None
 secretWord = ""
-alreadyPlayed = []
+forbiddenLetters = []
+alreadySeen = []
 constraints = []
 
 
@@ -85,27 +86,52 @@ def cptCorrectsChars(word, secretWord):
 #---------------------------------------------------------------------------------------------------------------
 
 def checkValidity(word):
-    
+    reward = 0
+
     # The word must be a new attempt, never tried before
-    if word in alreadyPlayed:
+    global alreadySeen
+    if word in alreadySeen or word not in vocabulary:
         return 0
     else:
-        global alreadyPlayed
-        alreadyPlayed.append(word)
+        alreadySeen.append(word)
+        buildConstraintsRules(word)
 
-    for letters, c in constraints:  # c = number of letters in 'letters' that must be in 'word_check'
+    for letters, bp, mp in constraints:  # c = number of letters in 'letters' that must be in 'word_check'
         word_check = list(copy.deepcopy(word))
-        cpt = 0
-        for l in letters:
-            if l in word_check:
-                cpt += 1
-                word_check.remove(l)
-                if cpt == c:
-                    reward += 1 # reward is the number of respected constraints
-                    break
+        cpt_bp = 0
+        cpt_mp = 0
+        tmp = []
 
-    buildConstraintsRules(word)
-    return True
+        for i in range(len(letters)):
+            if letters[i] == word_check[i]:
+                cpt_bp += 1
+                tmp.append(letters[i])
+
+        if cpt_bp == bp: # the word contains exactly bp letters at the same position of the constraint word
+            reward += (bp**2) * 2
+            letter_check = copy.deepcopy(word_check)
+            for letter in tmp:
+                word_check.remove(letter)
+                letter_check.remove(letter)
+            for letter in letter_check:
+                if letter in word_check:
+                    cpt_mp += 1
+                    word_check.remove(letter)
+                    if cpt_mp == mp:
+                        reward += mp**2
+                        break
+
+        if cpt_bp > bp: # the word contains more than bp letters at the same position of the constraint word : good indication but not correct
+            reward += bp # little penalization
+            for letter in letters:
+                if letter in word_check:
+                    cpt_mp += 1
+                    word_check.remove(letter)
+                    if cpt_mp == mp:
+                        reward += mp**2
+                        break
+
+    return reward
     
 
 #---------------------------------------------------------------------------------------------------------------
@@ -113,9 +139,20 @@ def checkValidity(word):
 def buildConstraintsRules(word):
     
     cptRightPos, cptBadPos = cptCorrectsChars(word, secretWord)
+    w = list(word)
 
     global constraints
-    constraints.append([list(word), cptRightPos + cptBadPos])
+    if cptRightPos + cptBadPos > 0:
+        constraints.append([w, cptRightPos, cptBadPos])
+    else:
+        for letter in w:
+            if w not in forbiddenLetters:
+                forbiddenLetters.append(letter)
 
-    print("Constraints :", constraints)
+    #print("Constraints :", constraints) ####################################################################!!!!!!!!!!!!!!!!!!!
+#---------------------------------------------------------------------------------------------------------------
 
+def isForbiddenLetter(letter):
+    if letter in forbiddenLetters:
+        return True
+    return False
