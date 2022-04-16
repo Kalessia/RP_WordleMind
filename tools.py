@@ -15,6 +15,7 @@
 #------------------------------------------------------------------------------------------------------
 
 import random
+import copy
 
 
 #------------------------------------------------------------------------------------------------------
@@ -22,14 +23,16 @@ import random
 #------------------------------------------------------------------------------------------------------
 
 vocabulary = None
-
+secretWord = ""
+alreadyPlayed = []
+constraints = []
 
 
 #------------------------------------------------------------------------------------------------------
 #   Tools
 #------------------------------------------------------------------------------------------------------
 
-def getVocabFromFile(filename, wordSize):
+def getVocabFromFile_setSecretWord(filename, wordSize):
     wordsList = []
     vocabulary_tmp = []
     with open(filename, "r") as f:
@@ -37,10 +40,12 @@ def getVocabFromFile(filename, wordSize):
 
     for word in wordsList :
         if len(word) == wordSize:
-            vocabulary_tmp.append(word)
+            vocabulary_tmp.append(word.lower())
     
-    global vocabulary
+    global vocabulary, secretWord
     vocabulary = vocabulary_tmp
+    secretWord = random.choice(vocabulary)
+    return secretWord
 
 
 #---------------------------------------------------------------------------------------------------------------
@@ -79,13 +84,38 @@ def cptCorrectsChars(word, secretWord):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def isWordConsistent(word):
+def checkValidity(word):
+    
+    # The word must be a new attempt, never tried before
+    if word in alreadyPlayed:
+        return 0
+    else:
+        global alreadyPlayed
+        alreadyPlayed.append(word)
+
+    for letters, c in constraints:  # c = number of letters in 'letters' that must be in 'word_check'
+        word_check = list(copy.deepcopy(word))
+        cpt = 0
+        for l in letters:
+            if l in word_check:
+                cpt += 1
+                word_check.remove(l)
+                if cpt == c:
+                    reward += 1 # reward is the number of respected constraints
+                    break
+
+    buildConstraintsRules(word)
     return True
     
 
 #---------------------------------------------------------------------------------------------------------------
 
-def isWordValid(word):
-    if word in vocabulary and isWordConsistent(word):
-        return True
-    return False
+def buildConstraintsRules(word):
+    
+    cptRightPos, cptBadPos = cptCorrectsChars(word, secretWord)
+
+    global constraints
+    constraints.append([list(word), cptRightPos + cptBadPos])
+
+    print("Constraints :", constraints)
+

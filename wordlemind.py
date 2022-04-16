@@ -55,7 +55,7 @@ indiceKTournament = 3           # number of selected best individuals in one gen
 mu = 3                          # number of selected parents in one generation          default is 3
 lambda_ = 3                     # number of generated childrens in one generation       default is 3
 
-maxTimeout = 5000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 0                  # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
 
 maxSizeESet = 14                # maximal size of valid words to collect                default is 14
 
@@ -66,8 +66,7 @@ maxSizeESet = 14                # maximal size of valid words to collect        
 #   WORDLE MIND game - play mode methods
 #------------------------------------------------------------------------------------------------------
 
-vocabulary = tools.getVocabFromFile(filename, wordLength)
-secretWord = tools.getWord().lower()
+secretWord = tools.getVocabFromFile_setSecretWord(filename, wordLength)
 firstTry = tools.getWord().lower()
 
 
@@ -119,9 +118,11 @@ def getOutcome(algo, finalPlayedWord, nbAttempt):
             \n\tmu : {mu}, \n\tlambda : {lambda_}, \n\tmaxTimeout : {maxTimeout}, \n\tmaxSizeESet : {maxSizeESet}")
 
 
-    print(f"\n\nLast played word : {finalPlayedWord}, \tSecret word : {secretWord}")
+    print(f"\n\nLast played word : {finalPlayedWord} \tSecret word : {secretWord}")
     if finalPlayedWord == secretWord:
         print(f"Congratulations ! The correct word has been found in {nbAttempt} attempts")
+    elif finalPlayedWord == None:
+        print(f"Game over : the algorithm hasn't found a new valid word to play...")
     else:
         cptRightPos, cptBadPos = tools.cptCorrectsChars(finalPlayedWord, secretWord)
         print(f"Oooooops... The last played word has {cptRightPos} letters at the correct position and {cptBadPos} letters at a wrong position.")
