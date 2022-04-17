@@ -38,7 +38,7 @@ plot = False                    # set 'True' to see a plot of the results       
 
 # part 2 : set these variables to play with the evolutionnary algorithm
 popSize = 20                    # number of individuals in one population               default is 10
-maxGen = 10                     # number of generations to run                          default is 1
+maxGen = 20                     # number of generations to run                          default is 1
 
 crossOp = 1                     # crossover operation choice                            default is 1
                                 #       1 = OnePointCrossover
@@ -57,7 +57,7 @@ indiceKTournament = 5           # number of selected best individuals in one gen
 mu = 5                          # number of selected parents in one generation          default is 3
 lambda_ = 15                    # number of generated childrens in one generation       default is 3
 
-maxTimeout = 5                  # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
+maxTimeout = 10                 # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
 
 maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
