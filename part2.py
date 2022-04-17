@@ -138,9 +138,9 @@ class evolutionnaryAlgorithm():
                 else:
                     t = time.time() - tStart 
                     if t >= self.maxTimeout:
+                        loop = False
                         if self.verbose : 
                             print("\nExtra time allowed to find a solution is finished. The procedure has failed.")
-                            loop = False
 
             nbGen += 1 
 

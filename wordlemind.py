@@ -171,7 +171,7 @@ def plotResults(algo, nMin, nMax, nbIterations, filename = None):
 
 
 #######################################################################################################
-#   WORDLE MIND game - play : toogle line comment to play with your preferred algorithm
+#   WORDLE MIND game - play : toogle line comments to play with your preferred algorithm
 #######################################################################################################
 
 
