@@ -143,6 +143,8 @@ def buildConstraintsRules(word, secretWord):
         for letter in w:
             if not isForbiddenLetter(letter):
                 forbiddenLetters.append(letter)
+    
+    return constraints
 
 
 #---------------------------------------------------------------------------------------------------------------

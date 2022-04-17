@@ -109,7 +109,7 @@ class evolutionnaryAlgorithm():
         loop = True
         timeout = False
         while loop:
-            pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_)
+            pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_, self.mutationRate)
             popFitnesses = self.computeFitnesses(pop)
 
             newESet = self.selectionESet(pop)
@@ -289,14 +289,14 @@ class evolutionnaryAlgorithm():
     #       - comma-sélection (u,l) : select u best parents and generate l childrens, pop = l individuals (offspring only)
     #---------------------------------------------------------------------------
 
-    def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
+    def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
         pop = []
         offspring = []
         priority = np.argsort(parentsFitnesses)[::-1][:k]
         
         for pr in priority:
             pop.append(parents[pr])
-        #print("Selected parents :", pop)    ####################################################################!!!!!!!!!!!!!!!!!!!
+
 
         for child in range(parentsSize):
             p1 = random.choice(pop)
@@ -305,7 +305,7 @@ class evolutionnaryAlgorithm():
             p2 = random.choice(pop_tmp)
 
             child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, self.mutationRate)
+            child2 = self.mutationOp(child1, mutationRate)
             offspring.append(child2)
 
             # if self.verbose:
@@ -319,7 +319,7 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
 
-    def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
+    def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
 
         assert (mu + lambda_) == len(parents), f"Mu+Lambda must have size = population size = {len(parents)}"
 
@@ -329,7 +329,7 @@ class evolutionnaryAlgorithm():
         
         for pr in priority:
             pop.append(parents[pr])   # pop contains mu best elements
-        #print("Selected parents :", pop)       ####################################################################!!!!!!!!!!!!!!!!!!!
+
 
         for child in range(lambda_):
             p1 = random.choice(pop)
@@ -338,7 +338,7 @@ class evolutionnaryAlgorithm():
             p2 = random.choice(pop_tmp)
 
             child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, self.mutationRate)
+            child2 = self.mutationOp(child1, mutationRate)
             offspring.append(child2)
 
             # if self.verbose:
@@ -353,7 +353,7 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
    
-    def lambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_):
+    def lambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
 
         assert lambda_ == len(parents), f"Lambda and population must have the same size = {len(parents)}"
 
@@ -363,7 +363,7 @@ class evolutionnaryAlgorithm():
         
         for pr in priority:
             pop.append(parents[pr])   # pop contains the mu best parents
-        #print("Selected parents :", pop)   ####################################################################!!!!!!!!!!!!!!!!!!!
+
 
         for child in range(lambda_):
             p1 = random.choice(pop)
@@ -372,7 +372,7 @@ class evolutionnaryAlgorithm():
             p2 = random.choice(pop_tmp)
 
             child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, self.mutationRate)
+            child2 = self.mutationOp(child1, mutationRate)
             offspring.append(child2)
 
             # if self.verbose:

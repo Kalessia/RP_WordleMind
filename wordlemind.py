@@ -33,7 +33,7 @@ wordLength = 4
 filename = "dico.txt"
 maxNbAttempts = 10
 verbose = True                  # set 'True' to see a trace of the algorithm            default is False
-plot = True                     # set 'True' to see a plot of the results               default is False
+plot = False                    # set 'True' to see a plot of the results               default is False
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
@@ -99,10 +99,9 @@ def playEvolutionnary():
         nbAttempt += 1
         cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
 
-        if verbose :
-            print("\n--------------------------------------------------------------------------")
-            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
-            print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
+        print("\n--------------------------------------------------------------------------")
+        print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
+        print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
 
         if cptRightPos == len(nextTry) or nextTry == None:
             break
