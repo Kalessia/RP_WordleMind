@@ -16,9 +16,11 @@
 #   Imports
 #------------------------------------------------------------------------------------------------------
 
+import numpy as np
+import time
+
 import tools
 import analysis
-
 import part2
 
 
@@ -31,11 +33,11 @@ wordLength = 4
 filename = "dico.txt"
 maxNbAttempts = 10
 verbose = True                  # set 'True' to see a trace of the algorithm            default is False
-plot = False                    # set 'True' to see a plot of the results               default is False
+plot = True                     # set 'True' to see a plot of the results               default is False
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
-popSize = 10                    # number of individuals in one population               default is 10
+popSize = 100                    # number of individuals in one population               default is 10
 maxGen = 1                      # number of generations to run                          default is 1
 
 crossOp = 2                     # crossover operation choice                            default is 1
@@ -47,15 +49,15 @@ mutationOp = 2                  # mutation operation choice                     
                                 #       2 = 
 mutationRate = 0.2              # mutation probability, value between [0,1]             default is 0.5
 
-selectionOp = 3                 # selection operator choice                             default is 1
+selectionOp = 1                 # selection operator choice                             default is 1
                                 #       1 = 
                                 #       2 = 
                                 #       3 = 
-indiceKTournament = 5          # number of selected best individuals in one generation. Default is 3
+indiceKTournament = 5           # number of selected best individuals in one generation. Default is 3
 mu = 5                          # number of selected parents in one generation          default is 3
-lambda_ = 10                     # number of generated childrens in one generation       default is 3
+lambda_ = 100                   # number of generated childrens in one generation       default is 3
 
-maxTimeout = 3000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 2000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
 
 maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
@@ -105,11 +107,10 @@ def playEvolutionnary():
 
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
 
+    if verbose:
+        getOutcome("part2_ea", nextTry, nbAttempt)
 
-    if plot:
-        analysis.plotResults()
-    
-    return getOutcome("part2_ea", nextTry, nbAttempt)
+    return nbAttempt
 
 
 #------------------------------------------------------------------------------------------------------
@@ -143,3 +144,29 @@ def getOutcome(algo, finalPlayedWord, nbAttempt):
 #playA1
 #playA2
 playEvolutionnary()
+
+
+def plotResults():
+    # set plot = 'True' to see a plot of the results
+    if plot:
+        nbIterations = 1
+        verbose = False
+
+        for n in range(4, 5):
+            wordLength = n
+            tmp1 = []
+            tmp2 = []
+            tab_n = []
+            tab_tempsMoyen = []
+            tab_nbEssais = []
+
+            for i in range(nbIterations):
+                tStart = time.time()
+                nbEssais = playEvolutionnary()
+                tmp1.append(time.time() - tStart)
+                tmp2.append(nbEssais)
+            tab_n.append(n)
+            tab_tempsMoyen.append(np.mean(tmp1)) 
+            tab_nbEssais.append(np.mean(tmp2))
+
+        analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None)
