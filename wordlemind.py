@@ -135,38 +135,46 @@ def getOutcome(algo, finalPlayedWord, nbAttempt):
         print("Next time will be a good one !")
 
 
+#------------------------------------------------------------------------------------------------------
+
+def plotResults(algo):  # set plot = 'True' to see a plot of the results
+    global wordLength, verbose
+    verbose = False
+    nbIterations = 1 # a effacer ###########################################################
+
+    for n in range(4, 5):
+        wordLength = n
+
+        tmp1 = []
+        tmp2 = []
+        tab_n = []
+        tab_tempsMoyen = []
+        tab_nbEssais = []
+
+        for i in range(nbIterations):
+            tStart = time.time()
+            nbEssais = algo()
+            tmp1.append(time.time() - tStart)
+            tmp2.append(nbEssais)
+        tab_n.append(n)
+        tab_tempsMoyen.append(np.mean(tmp1)) 
+        tab_nbEssais.append(np.mean(tmp2))
+
+    analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None)
+
+
 
 
 #######################################################################################################
 #   WORDLE MIND game - play : toogle line comment to play with your preferred algorithm
 #######################################################################################################
 
+
 #playA1
 #playA2
-playEvolutionnary()
+#playEvolutionnary()
 
-
-def plotResults():
-    # set plot = 'True' to see a plot of the results
-    if plot:
-        nbIterations = 1
-        verbose = False
-
-        for n in range(4, 5):
-            wordLength = n
-            tmp1 = []
-            tmp2 = []
-            tab_n = []
-            tab_tempsMoyen = []
-            tab_nbEssais = []
-
-            for i in range(nbIterations):
-                tStart = time.time()
-                nbEssais = playEvolutionnary()
-                tmp1.append(time.time() - tStart)
-                tmp2.append(nbEssais)
-            tab_n.append(n)
-            tab_tempsMoyen.append(np.mean(tmp1)) 
-            tab_nbEssais.append(np.mean(tmp2))
-
-        analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None)
+if plot:
+    #playA1
+    #playA2
+    plotResults(playEvolutionnary)
