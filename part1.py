@@ -1,4 +1,5 @@
 import random
+import analysis
 
 # Return an list of string from the dico with length of the word = wordSize
 # Ex: var = getDico("dico.txt", 4)
@@ -252,15 +253,29 @@ def startGame(n):
 
 def statistics():
     roundsArray = []
-    for n in range(8,9):   
-        for i in range(20):
-            result = startGame(n)
-            # print(result)
-            if result[1] != 0:
-                roundsArray.append(result[1])
+    mean_time = []
+    tab_n = []
 
-        average = sum(roundsArray) / len(roundsArray)
-        print('Average for n=', n, 'letters' ":", average,'tries as a mean for 20 games')
+
+    for n in range(8,9): 
+        res = 0  
+        rounds = 0
+        mean_round = 0
+        for i in range(20):
+            t1_start = process_time()
+            result = startGame(n)
+            t1_stop = process_time()
+            res += t1_stop-t1_start
+            # print(result)
+            rounds += result[1]
+        mean_time.append(round(res/20)) 
+        mean_round.append(round(rounds/20))
+        tab_n.append(n)
+    
+    analysis.plotResults(tab_n, mean_time, mean_round, filename = filename)
+
+
+
 
 
 
@@ -273,7 +288,7 @@ t1_start = process_time()
 print(startGame(4))
 
 # For statistics, set debug = False for disabling logs
-# statistics()
+statistics()
 
 
 t1_stop = process_time()
