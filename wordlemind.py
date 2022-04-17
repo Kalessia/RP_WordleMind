@@ -37,7 +37,7 @@ plot = False                    # set 'True' to see a plot of the results       
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
-popSize = 20                    # number of individuals in one population               default is 10
+popSize = 30                    # number of individuals in one population               default is 10
 maxGen = 20                     # number of generations to run                          default is 1
 
 crossOp = 1                     # crossover operation choice                            default is 1
@@ -47,7 +47,7 @@ crossOp = 1                     # crossover operation choice                    
 mutationOp = 1                  # mutation operation choice                             default is 1
                                 #       1 = aleaCharMutation
                                 #       2 = swapMutation
-mutationRate = 0.5              # mutation probability, value between [0,1]             default is 0.5
+mutationRate = 1                # mutation probability, value between [0,1]             default is 0.5
 
 selectionOp = 2                 # selection operator choice                             default is 1
                                 #       1 = kTournament
@@ -55,7 +55,7 @@ selectionOp = 2                 # selection operator choice                     
                                 #       3 = lambdaSelection
 indiceKTournament = 5           # number of selected best individuals in one generation. Default is 3
 mu = 5                          # number of selected parents in one generation          default is 3
-lambda_ = 15                    # number of generated childrens in one generation       default is 3
+lambda_ = 25                    # number of generated childrens in one generation       default is 3
 
 maxTimeout = 10                 # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
 

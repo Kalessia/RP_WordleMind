@@ -24,6 +24,7 @@ import copy
 
 vocabulary = None
 forbiddenLetters = []
+alreadyPlayed = []
 constraints = []            # collects informations about the previous attempts
 
 
@@ -133,6 +134,9 @@ def getFitness(word):
 
 def buildConstraintsRules(word, secretWord):
     
+    global alreadyPlayed
+    alreadyPlayed.append(word)
+
     cptRightPos, cptBadPos = cptCorrectsChars(word, secretWord)
     w = list(word)
 
@@ -158,6 +162,9 @@ def isForbiddenLetter(letter):
 #---------------------------------------------------------------------------------------------------------------
 
 def respectsAllContraints(word):
+
+    if word in alreadyPlayed:
+        return False
 
     for letter in word:
         if letter in forbiddenLetters:
