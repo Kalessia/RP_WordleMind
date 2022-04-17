@@ -27,8 +27,6 @@ import tools
 #   Evolutionnary algorithm
 #------------------------------------------------------------------------------------------------------
 
-random.seed()
-
 
 class evolutionnaryAlgorithm():
 
@@ -97,7 +95,7 @@ class evolutionnaryAlgorithm():
         eSet = []
         pop = self.initPopulation(previousWord.lower(), self.popSize)
         popFitnesses = self.computeFitnesses(pop)
-        newESet = self.selectionESet(pop, popFitnesses, maxSizeESet)
+        newESet = self.selectionESet(pop)
         eSet = self.addESet(eSet, newESet, maxSizeESet)
         
 
@@ -114,7 +112,7 @@ class evolutionnaryAlgorithm():
             pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_)
             popFitnesses = self.computeFitnesses(pop)
 
-            newESet = self.selectionESet(pop, popFitnesses, maxSizeESet)
+            newESet = self.selectionESet(pop)
             eSet = self.addESet(eSet, newESet, maxSizeESet)
             if len(eSet) >= maxSizeESet:
                 loop = False
@@ -157,24 +155,23 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def computeFitnesses(self, population):
+        
         fitnesses = []
-
         for p in population:
-            reward = tools.checkValidity(p)
+            reward = tools.getFitness(p)
             fitnesses.append(reward)
+
         return fitnesses
 
 
     #---------------------------------------------------------------------------
 
-    def selectionESet(self, population, fitnesses, maxSizeESet):
-        candidateWords = []
+    def selectionESet(self, population):
         
-        priority = np.argsort(fitnesses)[::-1][:maxSizeESet]
-        for pr in priority:
-            if fitnesses[pr] == 0:
-                break
-            candidateWords.append(population[pr])
+        candidateWords = []
+        for p in population:
+            if tools.respectsAllContraints(p):
+                candidateWords.append(p)
 
         return candidateWords
         
@@ -182,7 +179,10 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def addESet(self, eSet, newESet, maxSizeESet):
-        eSet = [*eSet, *newESet]
+        eSet = []
+        for elem in newESet:
+            if elem not in eSet:
+                eSet.append(elem)
 
         if len(eSet) - maxSizeESet > 0:
             return eSet[:maxSizeESet]
@@ -192,7 +192,7 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
     # Crossover operations
     #       - onePointCrossover : on the leftside of a random breakpoint child = parent1, on the rightside child = parent2
-    #       - twoPointsCrossover : 
+    #       - twoPointsCrossover : in the middle between two random breakpoints child = parent2, on the extrema sides child = parent1
     #---------------------------------------------------------------------------
 
     def onePointCrossover(self, parent1, parent2):

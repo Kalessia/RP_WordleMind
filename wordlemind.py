@@ -37,27 +37,27 @@ plot = True                     # set 'True' to see a plot of the results       
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
-popSize = 100                    # number of individuals in one population               default is 10
-maxGen = 1                      # number of generations to run                          default is 1
+popSize = 20                    # number of individuals in one population               default is 10
+maxGen = 10                     # number of generations to run                          default is 1
 
-crossOp = 2                     # crossover operation choice                            default is 1
+crossOp = 1                     # crossover operation choice                            default is 1
                                 #       1 = OnePointCrossover
                                 #       2 = TwoPointsCrossover 
 
-mutationOp = 2                  # mutation operation choice                             default is 1
-                                #       1 = 
-                                #       2 = 
+mutationOp = 1                  # mutation operation choice                             default is 1
+                                #       1 = aleaCharMutation
+                                #       2 = swapMutation
 mutationRate = 0.5              # mutation probability, value between [0,1]             default is 0.5
 
-selectionOp = 1                 # selection operator choice                             default is 1
-                                #       1 = 
-                                #       2 = 
-                                #       3 = 
+selectionOp = 2                 # selection operator choice                             default is 1
+                                #       1 = kTournament
+                                #       2 = uPlusLambdaSelection
+                                #       3 = lambdaSelection
 indiceKTournament = 5           # number of selected best individuals in one generation. Default is 3
 mu = 5                          # number of selected parents in one generation          default is 3
-lambda_ = 100                   # number of generated childrens in one generation       default is 3
+lambda_ = 15                    # number of generated childrens in one generation       default is 3
 
-maxTimeout = 2000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 1000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
 
 maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
@@ -68,8 +68,10 @@ maxSizeESet = 5                 # maximal size of valid words to collect        
 #   WORDLE MIND game - play mode methods
 #------------------------------------------------------------------------------------------------------
 
-secretWord = tools.getVocabFromFile_setSecretWord(filename, wordLength)
+tools.getVocabFromFile(filename, wordLength)
+secretWord = tools.getWord().lower()
 firstTry = tools.getWord().lower()
+
 
 
 #------------------------------------------------------------------------------------------------------
@@ -93,19 +95,24 @@ def playEvolutionnary():
 
     nextTry = firstTry
     nbAttempt = 0
-    while nbAttempt < maxNbAttempts and nextTry != secretWord:
+    while nbAttempt < maxNbAttempts:
         nbAttempt += 1
-
         cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
-        if cptRightPos == len(nextTry) or nextTry == None:
-            break
 
         if verbose :
             print("\n--------------------------------------------------------------------------")
-            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***")
-            print(f"Letters at the correct position : {cptRightPos}, Letters at a wrong position : {cptBadPos}.")
+            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
+            print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
 
+        if cptRightPos == len(nextTry) or nextTry == None:
+            break
+
+        contraintsRules = tools.buildConstraintsRules(nextTry, secretWord)
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
+
+        if verbose:
+            print(f"New constraints generated : {contraintsRules}")
+
 
     if verbose:
         getOutcome("part2_ea", nextTry, nbAttempt)
@@ -137,12 +144,10 @@ def getOutcome(algo, finalPlayedWord, nbAttempt):
 
 #------------------------------------------------------------------------------------------------------
 
-def plotResults(algo):  # set plot = 'True' to see a plot of the results
-    global wordLength, verbose
-    verbose = False
-    nbIterations = 1 # a effacer ###########################################################
+def plotResults(algo, nMin, nMax, nbIterations, filename = None):
 
-    for n in range(4, 5):
+    for n in range(nMin, nMax):
+        global wordLength
         wordLength = n
 
         tmp1 = []
@@ -160,7 +165,7 @@ def plotResults(algo):  # set plot = 'True' to see a plot of the results
         tab_tempsMoyen.append(np.mean(tmp1)) 
         tab_nbEssais.append(np.mean(tmp2))
 
-    analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None)
+    analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = filename)
 
 
 
@@ -170,11 +175,18 @@ def plotResults(algo):  # set plot = 'True' to see a plot of the results
 #######################################################################################################
 
 
-#playA1
-#playA2
-#playEvolutionnary()
+if plot: # set global plot = 'True' to see a plot of the results
+    nMin = 4
+    nMax = 5
+    nbIterations = 1
+    filename = None
+    verbose = False
 
-if plot:
+    #plotResults(playA1, nMin, nMax)
+    #plotResults(playA2, nMin, nMax)
+    plotResults(playEvolutionnary, nMin, nMax, nbIterations, filename)
+
+else:
     #playA1
     #playA2
-    plotResults(playEvolutionnary)
+    playEvolutionnary()
