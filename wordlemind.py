@@ -47,7 +47,7 @@ crossOp = 2                     # crossover operation choice                    
 mutationOp = 2                  # mutation operation choice                             default is 1
                                 #       1 = 
                                 #       2 = 
-mutationRate = 0.2              # mutation probability, value between [0,1]             default is 0.5
+mutationRate = 0.5              # mutation probability, value between [0,1]             default is 0.5
 
 selectionOp = 1                 # selection operator choice                             default is 1
                                 #       1 = 
