@@ -57,7 +57,7 @@ indiceKTournament = 5           # number of selected best individuals in one gen
 mu = 5                          # number of selected parents in one generation          default is 3
 lambda_ = 15                    # number of generated childrens in one generation       default is 3
 
-maxTimeout = 1000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 5                  # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
 
 maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
@@ -91,11 +91,12 @@ def playA2():
 #------------------------------------------------------------------------------------------------------
 
 def playEvolutionnary():
+    victory = False
     ea = part2.evolutionnaryAlgorithm(popSize, maxGen, crossOp, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, verbose)
 
     nextTry = firstTry
     nbAttempt = 0
-    while nbAttempt < maxNbAttempts:
+    while nbAttempt < maxNbAttempts and nextTry != None:
         nbAttempt += 1
         cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
 
@@ -103,7 +104,8 @@ def playEvolutionnary():
         print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
         print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
 
-        if cptRightPos == len(nextTry) or nextTry == None:
+        if cptRightPos == len(nextTry):
+            victory = True
             break
 
         contraintsRules = tools.buildConstraintsRules(nextTry, secretWord)
@@ -116,7 +118,7 @@ def playEvolutionnary():
     if verbose:
         getOutcome("part2_ea", nextTry, nbAttempt)
 
-    return nbAttempt
+    return victory, nbAttempt
 
 
 #------------------------------------------------------------------------------------------------------
@@ -149,22 +151,22 @@ def plotResults(algo, nMin, nMax, nbIterations, filename = None):
         global wordLength
         wordLength = n
 
-        tmp1 = []
-        tmp2 = []
+        tmp_meanTime = []
+        tmp_nbAttempts = []
         tab_n = []
-        tab_tempsMoyen = []
-        tab_nbEssais = []
+        tab_meanTime = []
+        tab_nbAttempts = []
 
-        for i in range(nbIterations):
+        for _ in range(nbIterations):
             tStart = time.time()
-            nbEssais = algo()
-            tmp1.append(time.time() - tStart)
-            tmp2.append(nbEssais)
+            _, nbAttempt = algo()
+            tmp_meanTime.append(time.time() - tStart)
+            tmp_nbAttempts.append(nbAttempt)
         tab_n.append(n)
-        tab_tempsMoyen.append(np.mean(tmp1)) 
-        tab_nbEssais.append(np.mean(tmp2))
+        tab_meanTime.append(np.mean(tmp_meanTime)) 
+        tab_nbAttempts.append(np.mean(tmp_nbAttempts))
 
-    analysis.plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = filename)
+    analysis.plotResults(tab_n, tab_meanTime, tab_nbAttempts, filename = filename)
 
 
 

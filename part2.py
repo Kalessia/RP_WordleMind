@@ -30,7 +30,7 @@ import tools
 
 class evolutionnaryAlgorithm():
 
-    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, mutationOp = 1, mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300000, verbose = False):
+    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, mutationOp = 1, mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300, verbose = False):
         self.popSize = popSize
         self.maxGen = maxGen
         self.mutationRate = mutationRate
@@ -38,7 +38,7 @@ class evolutionnaryAlgorithm():
         self.mu = mu
         self.lambda_ = lambda_
 
-        self.maxTimeout = maxTimeout    # 5 min = 300.000 ms
+        self.maxTimeout = maxTimeout    # default is 5 min = 300 seconds
         self.verbose = verbose
 
         
