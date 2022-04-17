@@ -60,8 +60,8 @@ class evolutionnaryAlgorithm():
         else:
             print("Mutation operator not found. Enter 1 (aleaCharMutation) or 2 (swapMutation)")
             return
-
-
+            
+        
         if selectionOp == 1:
             self.selectionOp = self.kTournament
         elif selectionOp == 2:
@@ -94,26 +94,23 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def findNextTry(self, previousWord, maxSizeESet = 14):
-        
+        eSet = []
         pop = self.initPopulation(previousWord.lower(), self.popSize)
         popFitnesses = self.computeFitnesses(pop)
-        eSet = []
+        newESet = self.selectionESet(pop, popFitnesses, maxSizeESet)
+        eSet = self.addESet(eSet, newESet, maxSizeESet)
+        
 
         if  self.verbose:
             print("\nFirst Generation Population :", pop)
             print("First Generation Fitnesses :", popFitnesses)
+            print("\neSet :", eSet)
 
-        nbGen = 0
+
+        nbGen = 1
         loop = True
         timeout = False
         while loop:
-
-            if self.verbose:
-                print("\n--------------------------------------------------------------------------")
-                print("\n>>> Generation n.", nbGen, " <<<\n")
-                print("Old population :", pop)
-                print("Old fitnesses :", popFitnesses)
-
             pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_)
             popFitnesses = self.computeFitnesses(pop)
 
@@ -123,12 +120,14 @@ class evolutionnaryAlgorithm():
                 loop = False
 
             if self.verbose:
+                print("\n--------------------------------------------------------------------------")
+                print("\n>>> Generation n.", nbGen, " <<<\n")
                 print("\nNew population :", pop)
                 print("New fitnesses :", popFitnesses)
                 print("\neSet :", eSet)
 
             
-            nbGen += 1
+
             if timeout == False and nbGen == self.maxGen and len(eSet) == 0:
                 if self.verbose :
                     print("\neSet is still empty... Extra time timer started to find a new word to play.")
@@ -144,7 +143,9 @@ class evolutionnaryAlgorithm():
                         if self.verbose : 
                             print("\nExtra time allowed to find a solution is finished. The procedure has failed.")
                             loop = False
-            
+
+            nbGen += 1 
+
 
         if len(eSet) > 0:
             nextTry = random.choice(eSet)
@@ -340,11 +341,11 @@ class evolutionnaryAlgorithm():
             child2 = self.mutationOp(child1, self.mutationRate)
             offspring.append(child2)
 
-            if self.verbose:
-                print("\nParent1 :", p1)
-                print("Parent2 :", p2)
-                print("\tCross effect :", child1)
-                print("\tMutation effect :", child2)
+            # if self.verbose:
+            #     print("\nParent1 :", p1)
+            #     print("Parent2 :", p2)
+            #     print("\tCross effect :", child1)
+            #     print("\tMutation effect :", child2)
 
         offspring = [*pop, *offspring]
         return offspring
@@ -374,11 +375,11 @@ class evolutionnaryAlgorithm():
             child2 = self.mutationOp(child1, self.mutationRate)
             offspring.append(child2)
 
-            if self.verbose:
-                print("\nParent1 :", p1)
-                print("Parent2 :", p2)
-                print("\tCross effect :", child1)
-                print("\tMutation effect :", child2)
+            # if self.verbose:
+            #     print("\nParent1 :", p1)
+            #     print("Parent2 :", p2)
+            #     print("\tCross effect :", child1)
+            #     print("\tMutation effect :", child2)
 
         return offspring
 

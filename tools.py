@@ -149,7 +149,7 @@ def buildConstraintsRules(word):
             if w not in forbiddenLetters:
                 forbiddenLetters.append(letter)
 
-    #print("Constraints :", constraints) ####################################################################!!!!!!!!!!!!!!!!!!!
+
 #---------------------------------------------------------------------------------------------------------------
 
 def isForbiddenLetter(letter):

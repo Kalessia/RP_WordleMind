@@ -35,29 +35,29 @@ plot = False                    # set 'True' to see a plot of the results       
 
 
 # part 2 : set these variables to play with the evolutionnary algorithm
-popSize = 100                   # number of individuals in one population               default is 10
-maxGen = 0                     # number of generations to run                          default is 1
+popSize = 30                    # number of individuals in one population               default is 10
+maxGen = 30                     # number of generations to run                          default is 1
 
-crossOp = 1                     # crossover operation choice                            default is 1
+crossOp = 2                     # crossover operation choice                            default is 1
                                 #       1 = OnePointCrossover
                                 #       2 = TwoPointsCrossover 
 
-mutationOp = 0.8                # mutation operation choice                             default is 1
+mutationOp = 2                  # mutation operation choice                             default is 1
                                 #       1 = 
                                 #       2 = 
-mutationRate = 1                # mutation probability, value between [0,1]             default is 0.5
+mutationRate = 0.2              # mutation probability, value between [0,1]             default is 0.5
 
-selectionOp = 1                 # selection operator choice                             default is 1
+selectionOp = 3                 # selection operator choice                             default is 1
                                 #       1 = 
                                 #       2 = 
                                 #       3 = 
-indiceKTournament = 3           # number of selected best individuals in one generation. Default is 3
-mu = 3                          # number of selected parents in one generation          default is 3
-lambda_ = 3                     # number of generated childrens in one generation       default is 3
+indiceKTournament = 5          # number of selected best individuals in one generation. Default is 3
+mu = 10                          # number of selected parents in one generation          default is 3
+lambda_ = 30                     # number of generated childrens in one generation       default is 3
 
-maxTimeout = 1000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
+maxTimeout = 3000               # extra time allowed to find a valid word to play if the e.a. fails. Default is 300.000 ms = 5 minutes
 
-maxSizeESet = 10                 # maximal size of valid words to collect                default is 14
+maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
 
 
@@ -99,6 +99,7 @@ def playEvolutionnary():
             break
 
         if verbose :
+            print("\n--------------------------------------------------------------------------")
             print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***")
             print(f"Letters at the correct position : {cptRightPos}, Letters at a wrong position : {cptBadPos}.")
 
