@@ -55,7 +55,7 @@ globalIndexes = []
 currentIndexes = []
 
 
-debug = False
+debug = True
 
 
 
@@ -73,6 +73,8 @@ def getRandomWord(remove):
 # Initialise globalIndexes variable. 
 # Indexes of the letter we gonna freeze when searching for a new word
 # ex: [ [0,1], [0,2], [1,2] ]
+
+
 def initIndexes(x, y):
     global globalIndexes
     global secret
@@ -80,7 +82,7 @@ def initIndexes(x, y):
     # n=3 [0,1,2]
     arr = [i for i in range(len(secret))] 
 
-    # [ [0,1], [0,2], [1,2] ]
+    # [ [0,1], [0,2], [1,2] ] # tous les indexes que je vais tester quand je vais avoir un nouveau best word
     indexes = [list(i) for i in list(combinations(arr, x))]
 
     globalIndexes = indexes
@@ -193,10 +195,10 @@ def playRound(guess, results):
         if (debug): print('Restart') ###
         return playRound(getRandomWord(True), {})
 
-    # Add contraint (Forward checking)
-    if bool(results) and newScore < results["score"]:
-        cleanDico(guess, currentIndexes)
-
+    # ---------------- Enable Forward Checking ------------------------
+    # if bool(results) and newScore < results["score"]:
+    #     cleanDico(guess, currentIndexes)
+    #------------------------------------------------------------------
     # If a new guessed word have a better score, then we continue the algo with this new word and results (x, y and score)
     if not bool(results) or (newScore > results["score"]):
         if (debug):
@@ -244,11 +246,13 @@ def startGame(n):
     return playRound(getRandomWord(True), {})
 
 
-# For statistics purpose
+# For statistic purpose
+# range(3,4) => only test on words n = 3
+# range(20) => test on 20 games
 
 def statistics():
     roundsArray = []
-    for n in range(4,9):
+    for n in range(8,9):   
         for i in range(20):
             result = startGame(n)
             # print(result)
@@ -256,7 +260,7 @@ def statistics():
                 roundsArray.append(result[1])
 
         average = sum(roundsArray) / len(roundsArray)
-        print('Average n=', n, ":", average, '20 iter')
+        print('Average for n=', n, 'letters' ":", average,'tries as a mean for 20 games')
 
 
 
@@ -265,6 +269,7 @@ t1_start = process_time()
 
 
 # For single game, set debug = True for enable logs
+# (startGame(n) where n = number of letters)
 print(startGame(4))
 
 # For statistics, set debug = False for disabling logs
