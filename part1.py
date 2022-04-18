@@ -1,4 +1,5 @@
 import random
+from turtle import clear
 import analysis
 
 # Return an list of string from the dico with length of the word = wordSize
@@ -272,12 +273,15 @@ def statistics():
             res += t1_stop-t1_start
             rounds += result[1]
             # print(result)
-        mean_time.append(round(res/nbIterations)) 
+
+        mean_time.append(res/nbIterations) 
         mean_round.append(rounds/nbIterations)
         tab_n.append(n)
     
-    analysis.plotResults(tab_n, mean_time, mean_round, filename = None)
+    analysis.plotMeanTime(tab_n, mean_time, plotfile = "A1")
+    analysis.plotNbAttempts(tab_n, mean_round, plotfile = "A1")
 
+    print("\ntab_n", tab_n, "\nmean_time", mean_time, "\nmean_round", mean_round)
 
 
 
