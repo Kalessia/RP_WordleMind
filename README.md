@@ -4,7 +4,7 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 
 
 
-
+<br>
 
 > Éxecution de l'algorithme A1 - **Retour arrière chronologique** (partie 1) :
 >
@@ -13,7 +13,7 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 > * Au fond de la page, décommenter la ligne "startGame(*n*)" (environ ligne 297), avec *n* la taille du mot à deviner.
 > * Exécuter le fichier part1.py.
 
-
+<br>
 
 >Éxecution de l'algorithme A2 - **Retour arrière chronologique avec arc cohérence** (partie 1) :
 >
@@ -22,6 +22,7 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 > * Au fond de la page, décommenter la ligne "startGame(*n*)" (environ ligne 297), avec *n* la taille du mot à deviner.
 > * Exécuter le fichier part1.py.
 
+<br>
 
 > Éxecution de l'**algorithme génétique** (partie 2) :
 > 
@@ -31,6 +32,7 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 > * Au fond de la page, décommenter la ligne "playEvolutionnary_part2()" (environ ligne 221).
 > * Exécuter le fichier wordleMind.py.
 
+<br>
 
 > Éxecution de l'**algorithme génétique optimisé** (partie 3) :
 > 
