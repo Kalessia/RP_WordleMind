@@ -198,8 +198,8 @@ def playRound(guess, results):
         return playRound(getRandomWord(True), {})
 
     # ---------------- Enable Forward Checking ------------------------
-    # if bool(results) and newScore < results["score"]:
-    #     cleanDico(guess, currentIndexes)
+    if bool(results) and newScore < results["score"]:
+        cleanDico(guess, currentIndexes)
     #------------------------------------------------------------------
     # If a new guessed word have a better score, then we continue the algo with this new word and results (x, y and score)
     if not bool(results) or (newScore > results["score"]):
@@ -278,10 +278,12 @@ def statistics():
         mean_round.append(rounds/nbIterations)
         tab_n.append(n)
     
-    analysis.plotMeanTime(tab_n, mean_time, plotfile = "A1")
-    analysis.plotNbAttempts(tab_n, mean_round, plotfile = "A1")
+    nomAlgo = "A2"
+    #analysis.plotMeanTime(tab_n, mean_time, nbIterations, plotfile = nomAlgo)
+    analysis.plotNbAttempts(tab_n, mean_round, nbIterations, plotfile = nomAlgo)
 
-    print("\ntab_n", tab_n, "\nmean_time", mean_time, "\nmean_round", mean_round)
+    print(">>>>" + nomAlgo)
+    print("\ntab_n", tab_n, "\nmean_time", mean_time, "\nmean_round", mean_round, "\nnbIterations", nbIterations)
 
 
 
