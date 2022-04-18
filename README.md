@@ -2,8 +2,6 @@
 
 Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle Mind
 
-
-
 <br>
 
 > Éxecution de l'algorithme A1 - **Retour arrière chronologique** (partie 1) :
@@ -15,7 +13,7 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 
 <br>
 
->Éxecution de l'algorithme A2 - **Retour arrière chronologique avec arc cohérence** (partie 1) :
+> Éxecution de l'algorithme A2 - **Retour arrière chronologique avec arc cohérence** (partie 1) :
 >
 > * Dans le fichier part1.py, sassurer que la section "Enable Forward Checking" (lignes 200-203) soit décommentée.
 >   * Fixer debug = 'True' pour voir les détails d'exécution (environ ligne 60).
@@ -25,19 +23,19 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 <br>
 
 > Éxecution de l'**algorithme génétique** (partie 2) :
-> 
+>
 > * Dans le fichier wordleMind.py, en début de page, fixer les paramètres à utiliser pour l''algorithme génétique.
 >   * Fixer debug = 'True' pour voir les détails d'exécution.
->   * Fixer verbose = 'True' pour voir une trace du déroulement du jeu.
 > * Au fond de la page, décommenter la ligne "playEvolutionnary_part2()" (environ ligne 221).
+>   * Fixer verbose = 'True' pour voir une trace du déroulement du jeu.
 > * Exécuter le fichier wordleMind.py.
 
 <br>
 
 > Éxecution de l'**algorithme génétique optimisé** (partie 3) :
-> 
+>
 > * Dans le fichier wordleMind.py, en début de page, fixer les paramètres à utiliser pour l''algorithme génétique.
 >   * Fixer debug = 'True' pour voir les détails d'exécution.
->   * Fixer verbose = 'True' pour voir une trace du déroulement du jeu.
 > * Au fond de la page, décommenter la ligne "playEvolutionnary_part3()" (environ ligne 222).
+>   * Fixer verbose = 'True' pour voir une trace du déroulement du jeu.
 > * Exécuter le fichier wordleMind.py.

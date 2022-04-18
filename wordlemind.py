@@ -39,8 +39,6 @@ nbIterations = 1                # number of iterations for one evaluation (used 
 plot = False                    # set 'True' to see a plot of the results               default is False
 plotfile = None                 # set a filename to save plots
 debug = True                    # set 'True' to see a trace of the algorithm            default is False
-verbose = True                  # set 'True' to see a trace of the algorithm            default is False
-
 
 # part 2 : set these variables to play with the evolutionnary algorithm
 popSize = 20                    # number of individuals in one population               default is 10
@@ -217,6 +215,7 @@ if plot: # set global plot = 'True' to see a plot of the results
     plotResults(playEvolutionnary_part2, "EA_part2", nMin, nMax, nbIterations, plotfile)
     #plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
 
-else:
+else:   # set global plot = 'False' to play a simple run 
+    verbose = True                  # set 'True' to see a trace of the game actions
     playEvolutionnary_part2()
     #playEvolutionnary_part3()
