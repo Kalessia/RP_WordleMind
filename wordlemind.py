@@ -218,7 +218,5 @@ if plot: # set global plot = 'True' to see a plot of the results
     #plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
 
 else:
-    debug = False
-    verbose = True
     playEvolutionnary_part2()
     #playEvolutionnary_part3()
