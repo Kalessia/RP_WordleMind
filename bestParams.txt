@@ -1,0 +1,35 @@
+# general : set these variables to play with one of the proposed algorithms
+wordLength = 4
+filename = "dico.txt"
+maxNbAttempts = 20
+
+nbIterations = 1                # number of iterations for one evaluation (used to compute mean values in statistics)
+plot = False                    # set 'True' to see a plot of the results               default is False
+plotfile = None                 # set a filename to save plots
+debug = True                    # set 'True' to see a trace of the algorithm            default is False
+
+# part 2 : set these variables to play with the evolutionnary algorithm
+popSize = 20                    # number of individuals in one population               default is 10
+maxGen = 50                     # number of generations to run                          default is 1
+
+crossOp = 2                     # crossover operation choice                            default is 1
+                                #       1 = OnePointCrossover
+                                #       2 = TwoPointsCrossover 
+crossRate = 0.5                 # crossover probability, value between [0,1]             default is 0.5
+
+mutationOp = 1                  # mutation operation choice                             default is 1
+                                #       1 = aleaCharMutation
+                                #       2 = swapMutation
+mutationRate = 0.5              # mutation probability, value between [0,1]             default is 0.5
+
+selectionOp = 1                 # selection operator choice                             default is 1
+                                #       1 = kTournament
+                                #       2 = uPlusLambdaSelection
+                                #       3 = lambdaSelection
+indiceKTournament = 3           # number of selected best individuals in one generation. Default is 3
+mu = 3                          # number of selected parents in one generation           default is 3
+lambda_ = 12                    # number of generated childrens in one generation       default is 3
+
+maxTimeout = 300                # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
+
+maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
