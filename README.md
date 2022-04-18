@@ -4,12 +4,15 @@ Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle
 
 
 
-Éxecution de l'algorithme A1 - **Retour arrière chronologique** (partie 1) :
+
+
+::: tip Éxecution de l'algorithme A1 - **Retour arrière chronologique** (partie 1) :
 
 * Dans le fichier part1.py, sassurer que la section "Enable Forward Checking" (lignes 200-203) soit commentée.
   * Fixer debug = 'True' pour voir les détails d'exécution (environ ligne 60).
 * Au fond de la page, décommenter la ligne "startGame(*n*)" (environ ligne 297), avec *n* la taille du mot à deviner.
 * Exécuter le fichier part1.py.
+:::
 
 
 Éxecution de l'algorithme A2 - **Retour arrière chronologique avec arc cohérence** (partie 1) :
