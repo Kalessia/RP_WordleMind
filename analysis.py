@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 #------------------------------------------------------------------------------------------------------
 
 
-def plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None):
+def plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, plotfile = None):
     x = tab_n
     y = tab_tempsMoyen
     z = tab_nbEssais
@@ -43,8 +43,8 @@ def plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None):
     plt.plot(x, y)
     plt.show()
 
-    if filename != None:
-        plt.savefig(filename + "_tempsMoyen", transparent = True)
+    if plotfile != None:
+        plt.savefig(plotfile + "_tempsMoyen", transparent = True)
 
 
     plt.title("Nombre moyen de essais en fonction de la taille du mot")
@@ -53,5 +53,24 @@ def plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None):
     plt.plot(x, z)
     plt.show()
 
-    if filename != None:
-        plt.savefig(filename + "_nbEssaisMoyen", transparent = True)
+    if plotfile != None:
+        plt.savefig(plotfile + "_nbEssaisMoyen", transparent = True)
+
+
+
+
+def plotSuccesses(tab_n, tabSuccesses, nbIterations, plotfile = None):
+    x = tab_n
+    y = tabSuccesses
+
+
+    plt.figure()
+
+    plt.title(f"Pourcentage des victoires sur {nbIterations} itérations")
+    plt.xlabel("n")
+    plt.ylabel("% victoires")
+    plt.plot(x, y)
+    plt.show()
+
+    if plotfile != None:
+        plt.savefig(plotfile + "_nbSuccesses", transparent = True)

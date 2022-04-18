@@ -30,9 +30,10 @@ import tools
 
 class evolutionnaryAlgorithm():
 
-    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, mutationOp = 1, mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300, verbose = False):
+    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, crossRate = 0.5, mutationOp = 1,  mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300, verbose = False):
         self.popSize = popSize
         self.maxGen = maxGen
+        self.crossRate = crossRate
         self.mutationRate = mutationRate
         self.indiceKTournament = indiceKTournament
         self.mu = mu
@@ -108,8 +109,8 @@ class evolutionnaryAlgorithm():
         nbGen = 1
         loop = True
         timeout = False
-        while loop:
-            pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_, self.mutationRate)
+        while loop == True:
+            pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_, self.crossRate, self.mutationRate)
             popFitnesses = self.computeFitnesses(pop)
 
             newESet = self.selectionESet(pop)
@@ -119,18 +120,21 @@ class evolutionnaryAlgorithm():
 
             if self.verbose:
                 print("\n--------------------------------------------------------------------------")
-                print("\n>>> Generation n.", nbGen, " <<<\n")
+                print("\n>>> Generation n.", nbGen, " - timeout :", timeout, " <<<\n")
                 print("\nNew population :", pop)
                 print("New fitnesses :", popFitnesses)
                 print("\neSet :", eSet)
 
-            
 
-            if timeout == False and nbGen == self.maxGen and len(eSet) == 0:
-                if self.verbose :
-                    print("\neSet is still empty... Extra time timer started to find a new word to play.")
-                timeout = True
-                tStart = time.time()
+
+            if timeout == False and nbGen == self.maxGen:
+                if len(eSet) == 0:
+                    timeout = True
+                    tStart = time.time()
+                    if self.verbose :
+                        print("\neSet is still empty... Extra time timer started to find a new word to play.")
+                else:
+                    loop = False
 
             if timeout == True:
                 if len(eSet) > 0:
@@ -158,7 +162,7 @@ class evolutionnaryAlgorithm():
         
         fitnesses = []
         for p in population:
-            reward = tools.getFitness(p)
+            reward = tools.getFitness_part2(p)
             fitnesses.append(reward)
 
         return fitnesses
@@ -170,7 +174,7 @@ class evolutionnaryAlgorithm():
         
         candidateWords = []
         for p in population:
-            if tools.respectsAllContraints(p):
+            if tools.respectsAllConstraints(p):
                 candidateWords.append(p)
 
         return candidateWords
@@ -195,44 +199,50 @@ class evolutionnaryAlgorithm():
     #       - twoPointsCrossover : in the middle between two random breakpoints child = parent2, on the extrema sides child = parent1
     #---------------------------------------------------------------------------
 
-    def onePointCrossover(self, parent1, parent2):
+    def onePointCrossover(self, parent1, parent2, crossRate):
         """ 
         """
         if len(parent1) < 2:
             return parent1
            
-        child = []
-        breakpoint = random.randint(1, len(parent1)-1) # on exclut la 1ère case
-        for i in range(len(parent1)):
-            if i < breakpoint:
-                child.append(parent1[i])
-            else:
-                child.append(parent2[i])
+        child = parent1
+
+        if random.random() <= crossRate:
+            child = []
+            breakpoint = random.randint(1, len(parent1)-1) # on exclut la 1ère case
+            for i in range(len(parent1)):
+                if i < breakpoint:
+                    child.append(parent1[i])
+                else:
+                    child.append(parent2[i])
        
         return "".join(child)
 
 
 #---------------------------------------------------------------------------
 
-    def twoPointsCrossover(self, parent1, parent2):
+    def twoPointsCrossover(self, parent1, parent2, crossRate):
 
         if len(parent1) < 3:
             return parent1
         
-        child = []
-        breakpoint1 = 0
-        breakpoint2 = 0
+        child = parent1
 
-        # breakpoint1 must be situated before breakpoint2
-        while breakpoint2 <= breakpoint1:
-            breakpoint1 = random.randint(1, len(parent1)-1) # on exclut la 1ère case
-            breakpoint2 = random.randint(2, len(parent2)-1)
-  
-        for i in range(len(parent1)):
-            if i < breakpoint1 or i >= breakpoint2:
-                child.append(parent1[i])
-            else:
-                child.append(parent2[i])
+        if random.random() <= crossRate:
+            child = []
+            breakpoint1 = 0
+            breakpoint2 = 0
+
+            # breakpoint1 must be situated before breakpoint2
+            while breakpoint2 <= breakpoint1:
+                breakpoint1 = random.randint(1, len(parent1)-1) # on exclut la 1ère case
+                breakpoint2 = random.randint(2, len(parent2)-1)
+    
+            for i in range(len(parent1)):
+                if i < breakpoint1 or i >= breakpoint2:
+                    child.append(parent1[i])
+                else:
+                    child.append(parent2[i])
        
         return "".join(child)
 
@@ -289,7 +299,7 @@ class evolutionnaryAlgorithm():
     #       - comma-sélection (u,l) : select u best parents and generate l childrens, pop = l individuals (offspring only)
     #---------------------------------------------------------------------------
 
-    def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
+    def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
         pop = []
         offspring = []
         priority = np.argsort(parentsFitnesses)[::-1][:k]
@@ -298,15 +308,17 @@ class evolutionnaryAlgorithm():
             pop.append(parents[pr])
 
 
-        for child in range(parentsSize):
+        while len(offspring) < parentsSize:
             p1 = random.choice(pop)
             pop_tmp = copy.deepcopy(pop)
             pop_tmp.remove(p1)
             p2 = random.choice(pop_tmp)
 
-            child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, mutationRate)
-            offspring.append(child2)
+            child = self.crossOp(p1, p2, crossRate)
+            child = self.mutationOp(child, mutationRate)
+            child = tools.getNearestWord(child)
+            if child not in offspring:
+                offspring.append(child)
 
             # if self.verbose:
             #     print("\nParent1 :", p1)
@@ -319,7 +331,7 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
 
-    def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
+    def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
 
         assert (mu + lambda_) == len(parents), f"Mu+Lambda must have size = population size = {len(parents)}"
 
@@ -331,15 +343,17 @@ class evolutionnaryAlgorithm():
             pop.append(parents[pr])   # pop contains mu best elements
 
 
-        for child in range(lambda_):
+        while len(offspring) < lambda_:
             p1 = random.choice(pop)
             pop_tmp = copy.deepcopy(pop)
             pop_tmp.remove(p1)
             p2 = random.choice(pop_tmp)
 
-            child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, mutationRate)
-            offspring.append(child2)
+            child = self.crossOp(p1, p2, crossRate)
+            child = self.mutationOp(child, mutationRate)
+            child = tools.getNearestWord(child)
+            if child not in offspring:
+                offspring.append(child)
 
             # if self.verbose:
             #     print("\nParent1 :", p1)
@@ -353,7 +367,7 @@ class evolutionnaryAlgorithm():
 
     #---------------------------------------------------------------------------
    
-    def lambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, mutationRate):
+    def lambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
 
         assert lambda_ == len(parents), f"Lambda and population must have the same size = {len(parents)}"
 
@@ -365,15 +379,17 @@ class evolutionnaryAlgorithm():
             pop.append(parents[pr])   # pop contains the mu best parents
 
 
-        for child in range(lambda_):
+        while len(offspring) < lambda_:
             p1 = random.choice(pop)
             pop_tmp = copy.deepcopy(pop)
             pop_tmp.remove(p1)
             p2 = random.choice(pop_tmp)
 
-            child1 = self.crossOp(p1, p2)
-            child2 = self.mutationOp(child1, mutationRate)
-            offspring.append(child2)
+            child = self.crossOp(p1, p2, crossRate)
+            child = self.mutationOp(child, mutationRate)
+            child = tools.getNearestWord(child)
+            if child not in offspring:
+                offspring.append(child)
 
             # if self.verbose:
             #     print("\nParent1 :", p1)

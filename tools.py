@@ -59,9 +59,9 @@ def cptCorrectsChars(word, secretWord):
     cptRightPos = 0
     cptBadPos = 0
 
-    secretWord_check = list(secretWord)
     word_check = list(word)
-
+    secretWord_check = list(secretWord)
+    
     tmp = []
     for pos in range(len(word_check)):
         if word_check[pos] == secretWord_check[pos]:
@@ -80,56 +80,7 @@ def cptCorrectsChars(word, secretWord):
 
     return cptRightPos, cptBadPos
 
-
-#---------------------------------------------------------------------------------------------------------------
-
-def getFitness(word):
-    reward = 0
-
-    if word not in vocabulary:
-        return 0
-
-    for letter in word:
-        if letter in forbiddenLetters:
-            return 0
-
-    for letters, rp, bp in constraints:
-        word_check = list(copy.deepcopy(word))
-        letters_check = copy.deepcopy(letters)
-
-        cptRightPos = 0
-        cptBadPos = 0
-        tmp = []
-
-        for pos in range(len(letters_check)):
-            if letters_check[pos] == word_check[pos]:
-                cptRightPos += 1
-                tmp.append(letters_check[pos])
-
-        if len(tmp) > 0:
-            for letter in tmp:
-                word_check.remove(letter)
-                letters_check.remove(letter)
- 
-        for letter in letters_check:
-            if letter in word_check:
-                cptBadPos += 1
-                word_check.remove(letter)
-
-
-        if cptRightPos == rp: # the word contains exactly rp letters at the same position of the constraint word
-            reward += (rp*2)**2
-            if cptBadPos >= bp:
-                reward += (bp*2)**2
-
-        if cptRightPos > rp: # the word contains more than rp letters at the same position of the constraint word : good indication but not correct
-            reward += rp # little penalization
-            if cptBadPos >= bp:
-                reward += bp
-
-    return reward
     
-
 #---------------------------------------------------------------------------------------------------------------
 
 def buildConstraintsRules(word, secretWord):
@@ -138,17 +89,16 @@ def buildConstraintsRules(word, secretWord):
     alreadyPlayed.append(word)
 
     cptRightPos, cptBadPos = cptCorrectsChars(word, secretWord)
-    w = list(word)
 
     global constraints
     if cptRightPos + cptBadPos > 0:
-        constraints.append([w, cptRightPos, cptBadPos])
+        constraints.append([word, cptRightPos, cptBadPos])
     else:
-        for letter in w:
+        for letter in word:
             if not isForbiddenLetter(letter):
                 forbiddenLetters.append(letter)
     
-    return constraints
+    return constraints, forbiddenLetters
 
 
 #---------------------------------------------------------------------------------------------------------------
@@ -161,41 +111,115 @@ def isForbiddenLetter(letter):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def respectsAllContraints(word):
+def respectsAllConstraints(word):
 
     if word in alreadyPlayed:
+        return False
+
+    if word not in vocabulary:
         return False
 
     for letter in word:
         if letter in forbiddenLetters:
             return False
 
-
     for letters, rp, bp in constraints:
-        word_check = list(copy.deepcopy(word))
-        letters_check = copy.deepcopy(letters)
-
-        cptRightPos = 0
-        cptBadPos = 0
-        tmp = []
-
-        for pos in range(len(letters_check)):
-            if letters_check[pos] == word_check[pos]:
-                cptRightPos += 1
-                tmp.append(letters_check[pos])
-
-        if len(tmp) > 0:
-            for letter in tmp:
-                word_check.remove(letter)
-                letters_check.remove(letter)
- 
-        for letter in letters_check:
-            if letter in word_check:
-                cptBadPos += 1
-                word_check.remove(letter)
+        cptRightPos, cptBadPos = cptCorrectsChars(word, letters)
         
         if cptRightPos != rp or cptBadPos != bp:
             return False
     
     return True
 
+
+#---------------------------------------------------------------------------------------------------------------
+
+def getNearestWord(word):
+    distMin = len(word) + 1
+    for v in vocabulary:
+        dist = hammingDistance(word, v)
+        if dist == 0:
+            return word
+        if dist < distMin:
+            distMin = dist
+            nearestWord = v
+
+    return nearestWord
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+def hammingDistance(word1, word2):
+    dist = 0
+    for l1, l2 in zip(word1, word2):
+        if l1 != l2 :
+            dist += 1
+    return dist
+
+
+
+#######################################################################################################
+#   Specific methods part 2
+#######################################################################################################
+
+
+def getFitness_part2(word):
+    reward = 0
+
+    for letter in word:
+        if letter in forbiddenLetters:
+            return 0
+
+    for letters, rp, bp in constraints:
+        cptRightPos, cptBadPos = cptCorrectsChars(word, letters)
+        
+        if cptRightPos == rp or cptBadPos == bp:
+           reward += 1
+
+    return reward
+
+
+
+
+#######################################################################################################
+#   Specific methods part 3
+#######################################################################################################
+
+
+def getFitness_part3(word):
+    reward = 0
+
+    for letter in word:
+        if letter in forbiddenLetters:
+            return 0
+
+    for letters, rp, bp in constraints:
+        cptRightPos, cptBadPos = cptCorrectsChars(word, letters)
+
+        if cptRightPos == rp: # the word contains exactly rp letters at the same position of the constraint word
+            reward += (rp*2)**2
+            if cptBadPos >= bp:
+                reward += (bp*2)**2
+
+        if cptRightPos > rp: # the word contains more than rp letters at the same position of the constraint word : good indication but not correct
+            reward += rp # little penalization
+            if cptBadPos >= bp:
+                reward += bp
+
+        if word  in vocabulary:
+            reward += len(word)
+
+    return reward
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+def getBestTry(eSet):
+    bestFitness = 0
+    bestWord = ""
+    random.shuffle(eSet)
+    for word, fitness in eSet:
+        if fitness > bestFitness:
+            bestFitness = fitness
+            bestWord = word
+    return bestWord
