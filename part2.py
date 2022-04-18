@@ -30,7 +30,7 @@ import tools
 
 class evolutionnaryAlgorithm():
 
-    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, crossRate = 0.5, mutationOp = 1,  mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300, verbose = False):
+    def __init__(self, popSize = 10, maxGen = 1, crossOp = 1, crossRate = 0.5, mutationOp = 1,  mutationRate = 0.5, selectionOp = 1, indiceKTournament = 3, mu = 3, lambda_ = 3, maxTimeout = 300, debug = False):
         self.popSize = popSize
         self.maxGen = maxGen
         self.crossRate = crossRate
@@ -40,7 +40,7 @@ class evolutionnaryAlgorithm():
         self.lambda_ = lambda_
 
         self.maxTimeout = maxTimeout    # default is 5 min = 300 seconds
-        self.verbose = verbose
+        self.debug = debug
 
         
         if crossOp == 1:
@@ -100,7 +100,7 @@ class evolutionnaryAlgorithm():
         eSet = self.addESet(eSet, newESet, maxSizeESet)
         
 
-        if  self.verbose:
+        if  self.debug:
             print("\nFirst Generation Population :", pop)
             print("First Generation Fitnesses :", popFitnesses)
             print("\neSet :", eSet)
@@ -118,7 +118,7 @@ class evolutionnaryAlgorithm():
             if len(eSet) >= maxSizeESet:
                 loop = False
 
-            if self.verbose:
+            if self.debug:
                 print("\n--------------------------------------------------------------------------")
                 print("\n>>> Generation n.", nbGen, " - timeout :", timeout, " <<<\n")
                 print("\nNew population :", pop)
@@ -131,7 +131,7 @@ class evolutionnaryAlgorithm():
                 if len(eSet) == 0:
                     timeout = True
                     tStart = time.time()
-                    if self.verbose :
+                    if self.debug :
                         print("\neSet is still empty... Extra time timer started to find a new word to play.")
                 else:
                     loop = False
@@ -143,7 +143,7 @@ class evolutionnaryAlgorithm():
                     t = time.time() - tStart 
                     if t >= self.maxTimeout:
                         loop = False
-                        if self.verbose : 
+                        if self.debug : 
                             print("\nExtra time allowed to find a solution is finished. The procedure has failed.")
 
             nbGen += 1 
@@ -320,7 +320,7 @@ class evolutionnaryAlgorithm():
             if child not in offspring:
                 offspring.append(child)
 
-            # if self.verbose:
+            # if self.debug:
             #     print("\nParent1 :", p1)
             #     print("Parent2 :", p2)
             #     print("\tCross effect :", child1)
@@ -355,7 +355,7 @@ class evolutionnaryAlgorithm():
             if child not in offspring:
                 offspring.append(child)
 
-            # if self.verbose:
+            # if self.debug:
             #     print("\nParent1 :", p1)
             #     print("Parent2 :", p2)
             #     print("\tCross effect :", child1)
@@ -391,7 +391,7 @@ class evolutionnaryAlgorithm():
             if child not in offspring:
                 offspring.append(child)
 
-            # if self.verbose:
+            # if self.debug:
             #     print("\nParent1 :", p1)
             #     print("Parent2 :", p2)
             #     print("\tCross effect :", child1)

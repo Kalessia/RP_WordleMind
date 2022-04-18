@@ -38,6 +38,7 @@ maxNbAttempts = 20
 nbIterations = 1                # number of iterations for one evaluation (used to compute mean values in statistics)
 plot = False                    # set 'True' to see a plot of the results               default is False
 plotfile = None                 # set a filename to save plots
+debug = True                    # set 'True' to see a trace of the algorithm            default is False
 verbose = True                  # set 'True' to see a trace of the algorithm            default is False
 
 
@@ -81,7 +82,7 @@ firstTry = tools.getWord().lower()
 
 def playEvolutionnary_part2():
     victory = False
-    ea = part2.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, verbose)
+    ea = part2.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, debug)
 
     nextTry = firstTry
     nbAttempt = 0
@@ -89,9 +90,10 @@ def playEvolutionnary_part2():
         nbAttempt += 1
         cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
 
-        print("\n--------------------------------------------------------------------------")
-        print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
-        print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
+        if verbose:
+            print("\n--------------------------------------------------------------------------")
+            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
+            print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
 
         if cptRightPos == len(nextTry):
             victory = True
@@ -100,8 +102,10 @@ def playEvolutionnary_part2():
         constraintsRules, forbiddenLetters = tools.buildConstraintsRules(nextTry, secretWord)
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
 
-        if verbose:
+        if debug:
             print(f"New constraints generated : {constraintsRules}")
+            print(f"Forbidden letters : {forbiddenLetters}")
+
 
     if verbose:
         getOutcome(nextTry, nbAttempt)
@@ -113,7 +117,7 @@ def playEvolutionnary_part2():
 
 def playEvolutionnary_part3():
     victory = False
-    ea = part3.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, verbose)
+    ea = part3.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, debug)
 
     nextTry = firstTry
     nbAttempt = 0
@@ -121,9 +125,10 @@ def playEvolutionnary_part3():
         nbAttempt += 1
         cptRightPos, cptBadPos = tools.cptCorrectsChars(nextTry, secretWord)
 
-        print("\n--------------------------------------------------------------------------")
-        print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
-        print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
+        if verbose:
+            print("\n--------------------------------------------------------------------------")
+            print(f"\nAttempt n.{nbAttempt} : played word is  *** {nextTry} ***     [debug] SECRET WORD : {secretWord}")
+            print(f"Letters at the correct position : {cptRightPos}, letters at a wrong position : {cptBadPos}.")
 
         if cptRightPos == len(nextTry):
             victory = True
@@ -132,7 +137,7 @@ def playEvolutionnary_part3():
         constraintsRules, forbiddenLetters = tools.buildConstraintsRules(nextTry, secretWord)
         nextTry = ea.findNextTry(nextTry, maxSizeESet)
 
-        if verbose:
+        if debug:
             print(f"New constraints generated : {constraintsRules}")
             print(f"Forbidden letters : {forbiddenLetters}")
 
@@ -160,7 +165,7 @@ def getOutcome(finalPlayedWord, nbAttempt):
 
 #------------------------------------------------------------------------------------------------------
 
-def plotResults(algo, nMin, nMax, nbIterations, plotfile = None):
+def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
 
     for n in range(nMin, nMax):
         global wordLength
@@ -186,8 +191,14 @@ def plotResults(algo, nMin, nMax, nbIterations, plotfile = None):
         tab_nbAttempts.append(np.mean(tmp_nbAttempts))
         tabSuccesses.append(round(cptVictories/nbIterations))
 
-    analysis.plotResults(tab_n, tab_meanTime, tab_nbAttempts, plotfile)
+    analysis.plotMeanTime(tab_n, tab_meanTime, nbIterations, plotfile = nomAlgo)
+    analysis.plotNbAttempts(tab_n, tmp_nbAttempts, nbIterations, plotfile = nomAlgo)
+    
     analysis.plotSuccesses(tab_n, tabSuccesses, nbIterations, plotfile)
+
+    print(">>>>" + nomAlgo)
+    print("\ntab_n", tab_n, "\nmean_time", tab_meanTime, "\nmean_round", tmp_nbAttempts, "\nnbIterations", nbIterations)
+
 
 
 
@@ -199,12 +210,15 @@ def plotResults(algo, nMin, nMax, nbIterations, plotfile = None):
 
 
 if plot: # set global plot = 'True' to see a plot of the results
-    nMin = 5
-    nMax = 6
+    nMin = 4
+    nMax = 5
+    debug = False
     verbose = False
-    plotResults(playEvolutionnary_part2, nMin, nMax, nbIterations, plotfile)
-    #plotResults(playEvolutionnary_part3, nMin, nMax, nbIterations, plotfile)
+    plotResults(playEvolutionnary_part2, "EA_part2", nMin, nMax, nbIterations, plotfile)
+    #plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
 
 else:
+    debug = False
+    verbose = True
     playEvolutionnary_part2()
     #playEvolutionnary_part3()
