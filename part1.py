@@ -251,28 +251,32 @@ def startGame(n):
 # range(3,4) => only test on words n = 3
 # range(20) => test on 20 games
 
+
 def statistics():
-    roundsArray = []
+    global debug
+    debug = False
+
+    nbIterations = 10
+    mean_round = []
     mean_time = []
     tab_n = []
 
 
-    for n in range(8,9): 
+    for n in range(4,9): 
         res = 0  
         rounds = 0
-        mean_round = 0
-        for i in range(20):
+        for i in range(nbIterations):
             t1_start = process_time()
             result = startGame(n)
             t1_stop = process_time()
             res += t1_stop-t1_start
-            # print(result)
             rounds += result[1]
-        mean_time.append(round(res/20)) 
-        mean_round.append(round(rounds/20))
+            # print(result)
+        mean_time.append(round(res/nbIterations)) 
+        mean_round.append(rounds/nbIterations)
         tab_n.append(n)
     
-    analysis.plotResults(tab_n, mean_time, mean_round, filename = filename)
+    analysis.plotResults(tab_n, mean_time, mean_round, filename = None)
 
 
 
@@ -280,16 +284,16 @@ def statistics():
 
 
 
-t1_start = process_time()
+#t1_start = process_time()
 
 
 # For single game, set debug = True for enable logs
 # (startGame(n) where n = number of letters)
-print(startGame(4))
+#print(startGame(4))
 
 # For statistics, set debug = False for disabling logs
 statistics()
 
 
-t1_stop = process_time()
-print("Elapsed time in seconds:", t1_stop-t1_start)
+#t1_stop = process_time()
+#print("Elapsed time in seconds:", t1_stop-t1_start)

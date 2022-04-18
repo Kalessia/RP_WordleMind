@@ -14,7 +14,7 @@
 #   Imports
 #------------------------------------------------------------------------------------------------------
 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 
 #------------------------------------------------------------------------------------------------------
@@ -36,21 +36,22 @@ def plotResults(tab_n, tab_tempsMoyen, tab_nbEssais, filename = None):
 
 
     plt.figure()
-    plt.subplot(211)
 
     plt.title("Temps moyen de résolution en fonction de la taille du mot")
     plt.xlabel("n")
     plt.ylabel("temps")
     plt.plot(x, y)
+    plt.show()
 
-    plt.subplot(212)
+    if filename != None:
+        plt.savefig(filename + "_tempsMoyen", transparent = True)
+
+
     plt.title("Nombre moyen de essais en fonction de la taille du mot")
     plt.xlabel("n")
     plt.ylabel("nb essais")
     plt.plot(x, z)
-
     plt.show()
 
-
     if filename != None:
-        plt.savefig(filename, transparent = True)
+        plt.savefig(filename + "_nbEssaisMoyen", transparent = True)
