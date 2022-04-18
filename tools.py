@@ -259,8 +259,8 @@ def checkStagnation(pop, popFitnesses):
 #---------------------------------------------------------------------------------------------------------------
 
 def getBestTry(eSet):
-    bestFitness = 0
-    bestWord = ""
+    bestFitness = -1
+    bestWord = None
     random.shuffle(eSet)
     for word, fitness in eSet:
         if fitness > bestFitness:

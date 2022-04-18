@@ -54,7 +54,6 @@ def plotNbAttempts(tab_n, tab_nbAttempts, nbIterations, plotfile = None):
     x = tab_n
     z = tab_nbAttempts
 
-
     plt.figure()
 
     plt.suptitle(f"Nombre moyen de essais en fonction de la taille du mot")

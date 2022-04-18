@@ -167,6 +167,7 @@ def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
         global wordLength
         wordLength = n
 
+
         tmp_meanTime = []
         tmp_nbAttempts = []
         tab_n = []
@@ -206,14 +207,15 @@ def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
 
 
 if plot: # set global plot = 'True' to see a plot of the results
-    nMin = 4
-    nMax = 5
+    nMin = 5
+    nMax = 6
     debug = False
-    verbose = False
-    plotResults(playEvolutionnary_part2, "EA_part2", nMin, nMax, nbIterations, plotfile)
-    #plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
+    verbose = True
+
+    #plotResults(playEvolutionnary_part2, "EA_part2", nMin, nMax, nbIterations, plotfile)
+    plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
 
 else:   # set global plot = 'False' to play a simple run 
     verbose = True                  # set 'True' to see a trace of the game actions
-    #playEvolutionnary_part2()
-    playEvolutionnary_part3()
+    playEvolutionnary_part2()
+    #playEvolutionnary_part3()
