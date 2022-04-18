@@ -257,7 +257,7 @@ def statistics():
     global debug
     debug = False
 
-    nbIterations = 10
+    nbIterations = 20
     mean_round = []
     mean_time = []
     tab_n = []
