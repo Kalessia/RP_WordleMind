@@ -4,7 +4,7 @@
 # 
 #                                           WORDLE MIND game
 #
-#                                 Alessia LOI 3971668, Antoine THOMAS
+#                                     Alessia LOI, Antoine THOMAS
 #
 #######################################################################################################
 
@@ -76,8 +76,7 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def initPopulation(self, firstWord, taillePop):
-        """
-        """
+
         parent = firstWord
         offspring = [parent]
 
@@ -112,6 +111,11 @@ class evolutionnaryAlgorithm():
         while loop == True:
             pop = self.selectionOp(pop, self.popSize, popFitnesses, self.indiceKTournament, self.mu, self.lambda_, self.crossRate, self.mutationRate)
             popFitnesses = self.computeFitnesses(pop)
+            changePop = tools.checkStagnation(pop, popFitnesses)
+            if changePop != None:
+                pop = self.initPopulation(changePop.lower(), self.popSize)
+                popFitnesses = self.computeFitnesses(pop)
+
 
             newESet = self.selectionESet(pop, popFitnesses)
             eSet = self.addESet(eSet, newESet, maxSizeESet)
@@ -200,8 +204,7 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def onePointCrossover(self, parent1, parent2, crossRate):
-        """ 
-        """
+
         if len(parent1) < 2:
             return parent1
            
@@ -254,8 +257,7 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def aleaCharMutation(self, originalWord, mutationRate):
-        """ 
-        """
+
         alphabetDomain = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         child = list(originalWord)
        
@@ -301,11 +303,13 @@ class evolutionnaryAlgorithm():
 
     def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
         pop = []
+        popFitnesses = []
         offspring = []
         priority = np.argsort(parentsFitnesses)[::-1][:k]
         
         for pr in priority:
             pop.append(parents[pr])
+            popFitnesses.append(parentsFitnesses[pr])
 
 
         while len(offspring) < parentsSize:
@@ -326,6 +330,53 @@ class evolutionnaryAlgorithm():
             #     print("\tCross effect :", child1)
             #     print("\tMutation effect :", child2)
 
+        offFitnesses = self.computeFitnesses(offspring)
+
+        allIndividuals = [*pop, *offspring]
+        allFitnesses = [*popFitnesses, *offFitnesses ]
+
+        priority = np.argsort(allFitnesses)[::-1][:parentsSize]
+        
+        offspring = []
+        for pr in priority:
+            offspring.append(allIndividuals[pr])
+
+        return offspring
+
+
+    #---------------------------------------------------------------------------
+
+    def uPlusLambdaSelection(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
+
+        assert (mu + lambda_) == len(parents), f"Mu+Lambda must have size = population size = {len(parents)}"
+
+        pop = []
+        offspring = []
+        priority = np.argsort(parentsFitnesses)[::-1][:mu]
+        
+        for pr in priority:
+            pop.append(parents[pr])   # pop contains mu best elements
+
+
+        while len(offspring) < lambda_:
+            p1 = random.choice(pop)
+            pop_tmp = copy.deepcopy(pop)
+            pop_tmp.remove(p1)
+            p2 = random.choice(pop_tmp)
+
+            child = self.crossOp(p1, p2, crossRate)
+            child = self.mutationOp(child, mutationRate)
+            child = tools.getNearestWord(child)
+            if child not in offspring:
+                offspring.append(child)
+
+            # if self.debug:
+            #     print("\nParent1 :", p1)
+            #     print("Parent2 :", p2)
+            #     print("\tCross effect :", child1)
+            #     print("\tMutation effect :", child2)
+
+        offspring = [*pop, *offspring]
         return offspring
 
 

@@ -1,3 +1,14 @@
+#######################################################################################################
+#   Sorbonne université Master ANDROIDE 2021 - 2022
+#   Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle Mind 
+# 
+#                                           WORDLE MIND game
+#
+#                                     Alessia LOI, Antoine THOMAS
+#
+#######################################################################################################
+
+
 import random
 from turtle import clear
 import analysis

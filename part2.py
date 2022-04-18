@@ -4,7 +4,7 @@
 # 
 #                                           WORDLE MIND game
 #
-#                                 Alessia LOI 3971668, Antoine THOMAS
+#                                     Alessia LOI, Antoine THOMAS
 #
 #######################################################################################################
 
@@ -254,8 +254,7 @@ class evolutionnaryAlgorithm():
     #---------------------------------------------------------------------------
 
     def aleaCharMutation(self, originalWord, mutationRate):
-        """ 
-        """
+
         alphabetDomain = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         child = list(originalWord)
        
@@ -301,11 +300,13 @@ class evolutionnaryAlgorithm():
 
     def kTournament(self, parents, parentsSize, parentsFitnesses, k, mu, lambda_, crossRate, mutationRate):
         pop = []
+        popFitnesses = []
         offspring = []
         priority = np.argsort(parentsFitnesses)[::-1][:k]
         
         for pr in priority:
             pop.append(parents[pr])
+            popFitnesses.append(parentsFitnesses[pr])
 
 
         while len(offspring) < parentsSize:
@@ -325,6 +326,17 @@ class evolutionnaryAlgorithm():
             #     print("Parent2 :", p2)
             #     print("\tCross effect :", child1)
             #     print("\tMutation effect :", child2)
+
+        offFitnesses = self.computeFitnesses(offspring)
+
+        allIndividuals = [*pop, *offspring]
+        allFitnesses = [*popFitnesses, *offFitnesses ]
+
+        priority = np.argsort(allFitnesses)[::-1][:parentsSize]
+        
+        offspring = []
+        for pr in priority:
+            offspring.append(allIndividuals[pr])
 
         return offspring
 

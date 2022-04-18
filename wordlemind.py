@@ -1,11 +1,10 @@
-
 #######################################################################################################
 #   Sorbonne université Master ANDROIDE 2021 - 2022
 #   Projet de résolution de problèmes : satisfaction de contraintes pour le Wordle Mind 
 # 
 #                                           WORDLE MIND game
 #
-#                                   Alessia LOI 3971668, Antoine THOMAS
+#                                     Alessia LOI, Antoine THOMAS
 #
 #######################################################################################################
 
@@ -62,7 +61,7 @@ indiceKTournament = 3           # number of selected best individuals in one gen
 mu = 3                          # number of selected parents in one generation           default is 3
 lambda_ = 12                    # number of generated childrens in one generation       default is 3
 
-maxTimeout = 10                 # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
+maxTimeout = 300                # extra time allowed to find a valid word to play if the e.a. fails. Default is 300 s = 5 minutes
 
 maxSizeESet = 5                 # maximal size of valid words to collect                default is 14
 
@@ -75,14 +74,13 @@ maxSizeESet = 5                 # maximal size of valid words to collect        
 
 tools.getVocabFromFile(filename, wordLength)
 secretWord = tools.getWord().lower()
-firstTry = tools.getWord().lower()
 
 
 def playEvolutionnary_part2():
     victory = False
     ea = part2.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, debug)
 
-    nextTry = firstTry
+    nextTry = tools.getWord().lower()
     nbAttempt = 0
     while nbAttempt < maxNbAttempts and nextTry != None:
         nbAttempt += 1
@@ -117,7 +115,7 @@ def playEvolutionnary_part3():
     victory = False
     ea = part3.evolutionnaryAlgorithm(popSize, maxGen, crossOp, crossRate, mutationOp, mutationRate, selectionOp, indiceKTournament, mu, lambda_, maxTimeout, debug)
 
-    nextTry = firstTry
+    nextTry = tools.getFurthestWord().lower()
     nbAttempt = 0
     while nbAttempt < maxNbAttempts and nextTry != None:
         nbAttempt += 1
@@ -217,5 +215,5 @@ if plot: # set global plot = 'True' to see a plot of the results
 
 else:   # set global plot = 'False' to play a simple run 
     verbose = True                  # set 'True' to see a trace of the game actions
-    playEvolutionnary_part2()
-    #playEvolutionnary_part3()
+    #playEvolutionnary_part2()
+    playEvolutionnary_part3()

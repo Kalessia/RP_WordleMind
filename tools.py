@@ -4,7 +4,7 @@
 # 
 #                                           WORDLE MIND game
 #
-#                                 Alessia LOI 3971668, Antoine THOMAS
+#                                     Alessia LOI, Antoine THOMAS
 #
 #######################################################################################################
 
@@ -15,7 +15,6 @@
 #------------------------------------------------------------------------------------------------------
 
 import random
-import copy
 
 
 #------------------------------------------------------------------------------------------------------
@@ -26,6 +25,9 @@ vocabulary = None
 forbiddenLetters = []
 alreadyPlayed = []
 constraints = []            # collects informations about the previous attempts
+
+historyTot = 0
+cptGen = 0
 
 
 #------------------------------------------------------------------------------------------------------
@@ -186,6 +188,21 @@ def getFitness_part2(word):
 #######################################################################################################
 
 
+def getFurthestWord():
+    distMax = 0
+    for word in vocabulary:
+        dist = len(set(word))
+        if dist > distMax:
+            distMax = dist
+            furthestWord = [word]
+        if dist == distMax:
+            furthestWord.append(word)
+
+    return random.choice(furthestWord)
+
+
+#---------------------------------------------------------------------------------------------------------------
+
 def getFitness_part3(word):
     reward = 0
 
@@ -210,6 +227,33 @@ def getFitness_part3(word):
             reward += len(word)
 
     return reward
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+def checkStagnation(pop, popFitnesses):
+    global historyTot, cptGen
+
+    tot = 0
+    for i in range(len(popFitnesses)):
+        tot += (i+1) * (popFitnesses[i]+1)
+
+    if tot == historyTot:
+        cptGen += 1
+        if cptGen > 10:
+            dist = 0
+            for p in pop:
+                dist += hammingDistance(pop[0], p)
+            if dist != 0:
+                dist = dist / len(pop)
+            if dist < len(pop[0])/3:
+                historyTot = 0
+                cptGen = 0
+                return getFurthestWord()
+    else:
+        historyTot = tot
+
+    return None
 
 
 #---------------------------------------------------------------------------------------------------------------
