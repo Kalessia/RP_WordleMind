@@ -305,10 +305,10 @@ def statistics(nomAlgo):
 
 # For single game, set debug = True for enable logs
 # (startGame(n) where n = number of letters)
-#print(startGame(4))
+print(startGame(4))
 
 # For statistics, set debug = False for disabling logs
-statistics("A1")
+#statistics("A1")
 
 
 #t1_stop = process_time()

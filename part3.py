@@ -311,7 +311,6 @@ class evolutionnaryAlgorithm():
             pop.append(parents[pr])
             popFitnesses.append(parentsFitnesses[pr])
 
-
         while len(offspring) < parentsSize:
             p1 = random.choice(pop)
             pop_tmp = copy.deepcopy(pop)

@@ -57,7 +57,6 @@ def getWord():
 #---------------------------------------------------------------------------------------------------------------
 
 def cptCorrectsChars(word, secretWord):
-
     cptRightPos = 0
     cptBadPos = 0
 
@@ -137,16 +136,21 @@ def respectsAllConstraints(word):
 #---------------------------------------------------------------------------------------------------------------
 
 def getNearestWord(word):
+    nearestWord = []
     distMin = len(word) + 1
     for v in vocabulary:
         dist = hammingDistance(word, v)
-        if dist == 0:
-            return word
         if dist < distMin:
+            nearestWord = [v]
             distMin = dist
-            nearestWord = v
+        if dist == distMin:
+            nearestWord.append(v)
 
-    return nearestWord
+    if len(nearestWord) > 0:
+        random.shuffle(nearestWord)
+        return random.choice(nearestWord)
+
+    return None
 
 
 #---------------------------------------------------------------------------------------------------------------

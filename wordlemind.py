@@ -18,6 +18,8 @@
 import numpy as np
 import time
 
+from sympy import N
+
 import tools
 import part2
 import part3
@@ -30,14 +32,14 @@ import analysis
 #------------------------------------------------------------------------------------------------------
 
 # general : set these variables to play with one of the proposed algorithms
-wordLength = 4
+wordLength = 6 
 filename = "dico.txt"
 maxNbAttempts = 20
 
 nbIterations = 1                # number of iterations for one evaluation (used to compute mean values in statistics)
 plot = False                    # set 'True' to see a plot of the results               default is False
 plotfile = None                 # set a filename to save plots
-debug = True                    # set 'True' to see a trace of the algorithm            default is False
+debug = False                    # set 'True' to see a trace of the algorithm            default is False
 
 # part 2 : set these variables to play with the evolutionnary algorithm
 popSize = 20                    # number of individuals in one population               default is 10
@@ -72,8 +74,6 @@ maxSizeESet = 5                 # maximal size of valid words to collect        
 #   WORDLE MIND game - play mode methods
 #------------------------------------------------------------------------------------------------------
 
-tools.getVocabFromFile(filename, wordLength)
-secretWord = tools.getWord().lower()
 
 
 def playEvolutionnary_part2():
@@ -163,10 +163,13 @@ def getOutcome(finalPlayedWord, nbAttempt):
 
 def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
 
-    for n in range(nMin, nMax):
-        global wordLength
-        wordLength = n
 
+    for nLetters in range(nMin, nMax):
+
+        global wordLength, secretWord, n
+        n = nLetters
+        tools.getVocabFromFile(filename, n)
+        secretWord = tools.getWord().lower()
 
         tmp_meanTime = []
         tmp_nbAttempts = []
@@ -183,7 +186,7 @@ def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
                 cptVictories += 1
                 tmp_meanTime.append(time.time() - tStart)
                 tmp_nbAttempts.append(nbAttempt)
-        tab_n.append(n)
+        tab_n.append(nLetters)
         tab_meanTime.append(np.mean(tmp_meanTime)) 
         tab_nbAttempts.append(np.mean(tmp_nbAttempts))
         tabSuccesses.append(round(cptVictories/nbIterations))
@@ -205,17 +208,18 @@ def plotResults(algo, nomAlgo, nMin, nMax, nbIterations, plotfile = None):
 #   WORDLE MIND game - play : toogle line comments to play with your preferred algorithm
 #######################################################################################################
 
-
+plot = True
 if plot: # set global plot = 'True' to see a plot of the results
-    nMin = 5
-    nMax = 6
+    nMin = 2
+    nMax = 7
     debug = False
     verbose = True
+    nbIterations = 1
 
     #plotResults(playEvolutionnary_part2, "EA_part2", nMin, nMax, nbIterations, plotfile)
     plotResults(playEvolutionnary_part3, "EA_part3", nMin, nMax, nbIterations, plotfile)
 
 else:   # set global plot = 'False' to play a simple run 
     verbose = True                  # set 'True' to see a trace of the game actions
-    playEvolutionnary_part2()
-    #playEvolutionnary_part3()
+    #playEvolutionnary_part2()
+    playEvolutionnary_part3()
